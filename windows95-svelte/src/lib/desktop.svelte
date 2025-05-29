@@ -3,6 +3,7 @@
     import Placeholder from "./placeholder.svelte";
 	import Toolbar from "./toolbar.svelte";
 	import Window from "./window.svelte";
+	import Settings from "./settings.svelte";
     
     const OBJECTS = {
         Portfolio: {
@@ -44,7 +45,7 @@
     showButtonPosition="top-right" 
     showButtonText="Debug Panel" 
     buttonIndex={1}
-  />
+  ><Settings/></Window>
   
   <Window 
     showButtonPosition="top-right" 

@@ -1,14 +1,24 @@
-<script lang='ts'>
+<script lang="ts">
+    import type { Component } from 'svelte';
+  
     interface Props {
       showButtonPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
       showButtonText?: string;
       buttonIndex?: number;
+      windowTitle?: string;
+      contentComponent?: Component;
+      contentProps?: Record<string, any>;
+      children?: any;
     }
   
     let { 
       showButtonPosition = 'top-left',
       showButtonText = 'Show Window',
-      buttonIndex = 0
+      buttonIndex = 0,
+      windowTitle = 'Window',
+      contentComponent,
+      contentProps = {},
+      children
     }: Props = $props();
   
     // Calculate offset based on button index to prevent overlapping
@@ -117,7 +127,7 @@
         role="button"
         tabindex="0"
       >
-        <span class="title">Draggable Window</span>
+        <span class="title">{windowTitle}</span>
         <button class="close-button" onclick={closeWindow}>
           ×
         </button>
@@ -125,12 +135,18 @@
   
       <!-- Content Area -->
       <div class="content">
-        <p>This is a draggable and resizable window!</p>
-        <p>Position: ({x}, {y})</p>
-        <p>Size: {width} × {height}</p>
-        <p>• Drag the title bar to move</p>
-        <p>• Click the × to close</p>
-        <p>• Drag the bottom-right corner to resize</p>
+        {#if contentComponent}
+          {#if typeof contentComponent === 'function'}
+            {@const ComponentConstructor = contentComponent}
+            <ComponentConstructor {...contentProps} />
+          {:else}
+            <contentComponent {...contentProps} />
+          {/if}
+        {:else if children}
+          {@render children()}
+        {:else}
+          <p>No content provided</p>
+        {/if}
       </div>
   
       <!-- Resize Handle -->
