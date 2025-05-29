@@ -1,16 +1,35 @@
-<script lang="ts">
+<script lang='ts'>
     interface Props {
       showButtonPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
       showButtonText?: string;
+      buttonIndex?: number;
     }
   
     let { 
       showButtonPosition = 'top-left',
-      showButtonText = 'Show Window'
+      showButtonText = 'Show Window',
+      buttonIndex = 0
     }: Props = $props();
   
-    let x = $state(50);
-    let y = $state(50);
+    // Calculate offset based on button index to prevent overlapping
+    const getButtonOffset = (index: number, position: string) => {
+      const spacing = 50; // 50px spacing between buttons
+      const offset = index * spacing;
+      
+      switch (position) {
+        case 'top-left':
+        case 'bottom-left':
+          return `transform: translateY(${offset}px);`;
+        case 'top-right':
+        case 'bottom-right':
+          return `transform: translateY(${offset}px);`;
+        default:
+          return '';
+      }
+    };
+  
+    let x = $state(50 + buttonIndex * 30); // Offset initial window position too
+    let y = $state(50 + buttonIndex * 30);
     let width = $state(300);
     let height = $state(200);
     let isDragging = $state(false);
@@ -69,11 +88,19 @@
   />
   
   {#if !isVisible}
-    <button class="show-button {showButtonPosition}" onclick={showWindow}>
+    <button 
+      class="show-button {showButtonPosition}" 
+      style={getButtonOffset(buttonIndex, showButtonPosition)}
+      onclick={showWindow}
+    >
       {showButtonText}
     </button>
   {:else}
-    <button class="show-button always-visible {showButtonPosition}" onclick={showWindow}>
+    <button 
+      class="show-button always-visible {showButtonPosition}" 
+      style={getButtonOffset(buttonIndex, showButtonPosition)}
+      onclick={showWindow}
+    >
       {showButtonText}
     </button>
   {/if}

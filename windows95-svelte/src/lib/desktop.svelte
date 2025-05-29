@@ -40,7 +40,17 @@
     <div class=main-screen>
         bleh
     </div>
-    <Window/>
+    <Window 
+    showButtonPosition="top-right" 
+    showButtonText="Debug Panel" 
+    buttonIndex={1}
+  />
+  
+  <Window 
+    showButtonPosition="top-right" 
+    showButtonText="Tools" 
+    buttonIndex={2}
+  />
     <div class=toolbar>
         <Toolbar/>
     </div>
