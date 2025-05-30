@@ -72,6 +72,8 @@
 
 	// Listen for restore events from toolbar
 	onMount(() => {
+    width = Math.floor(window.innerWidth - 2*x);
+    height = Math.floor(window.innerHeight -2*y);
 		const handleRestore = (event: Event) => {
       if (event instanceof CustomEvent) {
             const customEvent = event as CustomEvent;
