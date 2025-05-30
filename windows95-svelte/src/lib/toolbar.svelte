@@ -1,142 +1,92 @@
 <script>
     let now = new Date();
-
+    
     setInterval(() => {
-    now = new Date();
+      now = new Date();
     }, 1000);
+    
     $: formattedTime = now.toLocaleTimeString();
-</script>
-
-<div class=toolbar-wrapper>
-<div class=tab-container-outer>
-    <div class=tab-container>
-        <img alt='a' src="assets/logo2.png" class=window-bar-icon/>
-        <p class=container-text>Start</p>
+  </script>
+  
+  <div class="taskbar">
+    <!-- Start Button -->
+    <div class="start-button">
+      <span class="button-text">Start</span>
     </div>
-</div>
-<div class=spacer></div>
-<div class=center>
-
-
-
-</div>
-<div class=time-container-outer>
-    <p class=container-text>{formattedTime}</p>
-</div>
-</div>
-<style>
-    .tab-container-outer {
-        border: 1px solid white;
-        border-bottom-color: black;
-        border-right-color: black;
-        width: 64px;
-        height: 24px;
-        align-items: center;
-        /* flex: 1; */
+    
+    <!-- Separator -->
+    <div class="separator"></div>
+    
+    <!-- Center area for dynamic content -->
+    <div class="center-area">
+      <!-- Dynamic elements can be added here -->
+    </div>
+    
+    <!-- Clock -->
+    <div class="clock">
+      <span class="button-text">{formattedTime}</span>
+    </div>
+  </div>
+  
+  <style>
+    .taskbar {
+      display: flex;
+      width: 100%;
+      height: 26px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      align-items: center;
+      font-family: 'MS Sans Serif', sans-serif;
+      font-size: 11px;
     }
-
-    .center-container-outer {
-        border: 1px solid white;
-        border-bottom-color: black;
-        border-right-color: black;
-        min-width: 50px;
-        width: 50%;
-        height: 24px;
-        /* flex: 1; */
+    
+    .start-button {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      min-width: 64px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
     }
-
-    .center-container-outer-on {
-        border: 1px solid black;
-        border-bottom-color: white;
-        border-right-color: white;
-        min-width: 50px;
-        width: 50%;
-        height: 24px;
-        /* flex: 1; */
+    
+    .start-button:hover {
+      background-color: #d4d0c8;
     }
-
-    .tab-container-on {
-        display: flex;
-        border: 1px solid gray;
-        border-bottom-color: darkgray;
-        border-right-color: darkgray;
-        background-image: linear-gradient(45deg, white 25%, transparent 25%),
-            linear-gradient(-45deg, white 25%, transparent 25%),
-            linear-gradient(45deg, transparent 75%, white 75%),
-            linear-gradient(-45deg, transparent 75%, white 75%);
-        background-size: 4px 4px;
-        background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
-        align-items: center;
-        flex: 1;
+    
+    .start-button:active {
+      border: 1px inset #c0c0c0;
     }
-
-    .container-text {
-        /* font-weight: bold; */
-        padding-left: 4px;
-        padding-right: 4px;
+    
+    .separator {
+      width: 2px;
+      height: 20px;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #ffffff;
+      margin: 0 4px;
     }
-
-    .tab-container {
-        display: flex;
-        border: 1px solid darkGray;
-        border-bottom-color: gray;
-        border-right-color: gray;
-        align-items: center;
-        flex: 1;
+    
+    .center-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 4px;
     }
-
-    .center {
-        justify-content: start;
-        width: fit-content;
-        flex-grow: 1;
+    
+    .clock {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      min-width: 60px;
+      border: 1px inset #c0c0c0;
+      background-color: #c0c0c0;
+      padding: 0 4px;
     }
-
-    .tab-icon {
-        margin-right: 6px;
+    
+    .button-text {
+      padding: 0 4px;
+      user-select: none;
     }
-
-    .spacer {
-        display: flex;
-        width: 0px;
-        border: 1px solid darkGray;
-        border-left-color: white;
-        border-top-color: white;
-        margin-left: 4px;
-        margin-right: 4px;
-    }
-
-    .time-container-outer {
-        border: 1px solid gray;
-        border-bottom-color: white;
-        border-right-color: white;
-        width: 56px;
-        height: 24px;
-        justify-content: center;
-        align-items: center;
-        /* flex: 1; */
-    }
-
-    .time-container {
-        display: flex;
-        border: 1px solid gray;
-        border-bottom-color: darkgray;
-        border-right-color: darkgray;
-        align-items: center;
-        justify-content: center;
-        flex: 1;
-    }
-
-    .window-bar-icon {
-        /* padding-top: 1px; */
-        padding-left: 4px;
-        height: 16px;
-    }
-
-    .toolbar-wrapper {
-        width: '100%';
-        padding-right: '6px';
-        /* display:inline; */
-        display: flex;
-    }
-
-</style>
+  </style>

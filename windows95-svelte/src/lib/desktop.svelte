@@ -45,6 +45,8 @@
     showButtonPosition="top-right" 
     showButtonText="Debug Panel" 
     buttonIndex={1}
+    contentProps={{ theme: 'dark', username: 'John' }}
+    windowTitle="Settings"
   ><Settings/></Window>
   
   <Window 
