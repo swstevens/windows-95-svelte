@@ -45,8 +45,11 @@
   let isDragging = $state(false);
   let isResizing = $state(false);
   let isVisible = $state(true);
+  let isMinimized = $state(false);
+  let isMaximized = $state(false);
   let dragOffset = $state({ x: 0, y: 0 });
   let resizeOffset = $state({ x: 0, y: 0 });
+  let previousState = $state({ x: 50 + buttonIndex * 30, y: 50 + buttonIndex * 30, width: 300, height: 200 });
 
   function handleDragStart(event: MouseEvent) {
     isDragging = true;
@@ -89,6 +92,31 @@
 
   function showWindow() {
     isVisible = true;
+    isMinimized = false;
+  }
+
+  function minimizeWindow() {
+    isMinimized = true;
+  }
+
+  function maximizeWindow() {
+    if (isMaximized) {
+      // Restore to previous size and position
+      x = previousState.x;
+      y = previousState.y;
+      width = previousState.width;
+      height = previousState.height;
+      isMaximized = false;
+    } else {
+      // Store current state before maximizing
+      previousState = { x, y, width, height };
+      // Maximize to full viewport
+      x = 0;
+      y = 0;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      isMaximized = true;
+    }
   }
 </script>
 
@@ -115,7 +143,7 @@
   </button>
 {/if}
 
-{#if isVisible}
+{#if isVisible && !isMinimized}
   <div 
     class="window"
     style="left: {x}px; top: {y}px; width: {width}px; height: {height}px;"
@@ -128,9 +156,21 @@
       tabindex="0"
     >
       <span class="title">{windowTitle}</span>
-      <button class="close-button" onclick={closeWindow}>
-        ×
-      </button>
+      <div class="title-buttons">
+        <button class="title-button minimize-button" onclick={minimizeWindow} title="Minimize">
+          _
+        </button>
+        <button class="title-button maximize-button" onclick={maximizeWindow} title={isMaximized ? "Restore" : "Maximize"}>
+          {#if isMaximized}
+            ⧉
+          {:else}
+            □
+          {/if}
+        </button>
+        <button class="title-button close-button" onclick={closeWindow} title="Close">
+          ×
+        </button>
+      </div>
     </div>
 
     <!-- Content Area -->
@@ -250,7 +290,12 @@
     padding-left: 4px;
   }
 
-  .close-button {
+  .title-buttons {
+    display: flex;
+    gap: 1px;
+  }
+
+  .title-button {
     background: #c0c0c0;
     border: 1px outset #c0c0c0;
     color: black;
@@ -267,13 +312,22 @@
     line-height: 1;
   }
 
-  .close-button:hover {
+  .title-button:hover {
     background: #d4d0c8;
   }
 
-  .close-button:active {
+  .title-button:active {
     border: 1px inset #c0c0c0;
     background: #a0a0a0;
+  }
+
+  .minimize-button {
+    font-size: 12px;
+    padding-top: 2px;
+  }
+
+  .maximize-button {
+    font-size: 9px;
   }
 
   .content {
