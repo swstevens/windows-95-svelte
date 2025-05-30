@@ -23,10 +23,12 @@
 			left: 12
 		}
 	};
-	const entries = Object.entries(OBJECTS);
-
-	// Track open windows with their state using Svelte 5 runes
-	let openWindows = $state([]);
+    interface WindowState {
+    id: string;
+    title: string;
+    isMinimized: boolean;
+    }
+    let openWindows = $state<WindowState[]>([]);
 
 	// Functions to manage window state
 	function addWindow(id:string, title:string, isMinimized = false) {
@@ -63,8 +65,8 @@
 	}
 
 	// Handle window state changes from child Window components
-	function handleWindowStateChange(id, title) {
-		return (isVisible, isMinimized) => {
+	function handleWindowStateChange(id:string, title:string) {
+		return (isVisible:boolean, isMinimized:boolean) => {
 			if (isVisible && !isMinimized) {
 				addWindow(id, title, false);
 			} else if (isVisible && isMinimized) {
