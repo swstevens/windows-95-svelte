@@ -61,7 +61,7 @@
 
 <style>
     .desktop {
-        background-color: green;
+        background-color: #018281;
         height:100%;
         display:flex;
         flex-direction: column;
