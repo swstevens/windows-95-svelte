@@ -4,10 +4,9 @@
 	import Toolbar from './toolbar.svelte';
 	import Window from './window.svelte';
 	import Settings from './settings.svelte';
-	import Home from './pages/home.svelte';
-	import HomeAlternate from './pages/home_alternate.svelte';
-
-	const OBJECTS = {
+    import PortfolioPage from './pages/portfolio_page.svelte';
+	
+    const OBJECTS = {
 		Portfolio: {
 			key: 'About Me',
 			icon: 'assets/myComputer.png',
@@ -102,7 +101,7 @@
 		windowTitle="Settings"
 		onWindowStateChange={handleWindowStateChange('debug-panel', 'Settings')}
 	>
-		<HomeAlternate />
+		<PortfolioPage />
 	</Window>
 
 	<Window
@@ -113,7 +112,7 @@
 		windowTitle="Home"
 		onWindowStateChange={handleWindowStateChange('tools-window', 'Home')}
 	>
-		<Home />
+		<PortfolioPage />
 	</Window>
 
 	<!-- Toolbar at bottom -->
