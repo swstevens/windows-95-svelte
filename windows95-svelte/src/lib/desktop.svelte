@@ -4,6 +4,7 @@
 	import Toolbar from "./toolbar.svelte";
 	import Window from "./window.svelte";
 	import Settings from "./settings.svelte";
+	import Home from "./pages/home.svelte";
     
     const OBJECTS = {
         Portfolio: {
@@ -53,7 +54,8 @@
     showButtonPosition="top-right" 
     showButtonText="Tools" 
     buttonIndex={2}
-  />
+    windowTitle="Home"
+  ><Home/></Window>
     <div class=toolbar>
         <Toolbar/>
     </div>
