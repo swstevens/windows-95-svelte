@@ -1,7 +1,25 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	let { openWindows = [], restoreWindow } = $props();
+	interface WindowState {
+		id: string;
+		title: string;
+		isOpen: boolean;
+		isMinimized: boolean;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+		zIndex: number;
+	}
+
+	let { 
+		openWindows = [] as WindowState[], 
+		onWindowToggle 
+	}: {
+		openWindows: WindowState[];
+		onWindowToggle?: (windowId: string) => void;
+	} = $props();
 
 	let now = $state(new Date());
 
@@ -9,15 +27,14 @@
 		const interval = setInterval(() => {
 			now = new Date();
 		}, 1000);
-
 		return () => clearInterval(interval);
 	});
 
 	let formattedTime = $derived(now.toLocaleTimeString());
 
-	function handleWindowClick(windowId:String) {
-		if (restoreWindow) {
-			restoreWindow(windowId);
+	function handleWindowClick(windowId: string) {
+		if (onWindowToggle) {
+			onWindowToggle(windowId);
 		}
 	}
 </script>

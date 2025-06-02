@@ -2,85 +2,61 @@
 	import { onMount } from 'svelte';
 	import type { Component } from 'svelte';
 
+	interface WindowState {
+		id: string;
+		title: string;
+		isOpen: boolean;
+		isMinimized: boolean;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+		zIndex: number;
+	}
+
 	interface Props {
-		id?: string;
-		windowTitle?: string;
+		windowState: WindowState;
 		contentComponent?: Component;
 		contentProps?: Record<string, any>;
 		children?: any;
-		onWindowStateChange?: (isVisible: boolean, isMinimized: boolean) => void;
-		isVisible?: boolean;
-		buttonIndex?: number;
+		onClose?: () => void;
+		toggleMinimize?: () => void;
+		onPositionChange?: (x: number, y: number) => void;
+		onSizeChange?: (width: number, height: number) => void;
+		onBringToFront?: () => void;
 	}
 
 	let {
-		id = 'window-' + Math.random().toString(36).substr(2, 9),
-		windowTitle = 'Window',
+		windowState,
 		contentComponent,
 		contentProps = {},
 		children,
-		onWindowStateChange,
-		isVisible = $bindable(false),
-		buttonIndex = 0
+		onClose,
+		toggleMinimize,
+		onPositionChange,
+		onSizeChange,
+		onBringToFront
 	}: Props = $props();
 
-	// Window state using Svelte 5 runes
-	let x = $state(50 + buttonIndex * 30);
-	let y = $state(50 + buttonIndex * 30);
-	let width = $state(800);
-	let height = $state(600);
+	// Local dragging and resizing state
 	let isDragging = $state(false);
 	let isResizing = $state(false);
-	let isMinimized = $state(false);
 	let isMaximized = $state(false);
 	let dragOffset = $state({ x: 0, y: 0 });
 	let resizeOffset = $state({ x: 0, y: 0 });
-	let previousState = $derived({
-		x: 50 + buttonIndex * 30,
-		y: 50 + buttonIndex * 30,
-		width: width,
-		height: height
-	});
-	let zIndex = $state(1000 + buttonIndex);
+	let previousState = $state({ x: 0, y: 0, width: 0, height: 0 });
 
-	// Watch for window state changes and notify parent
-	$effect(() => {
-		if (onWindowStateChange) {
-			onWindowStateChange(isVisible, isMinimized);
+	// Initialize window size on mount
+	onMount(() => {
+		if (onSizeChange) {
+			const initialWidth = Math.floor(window.innerWidth - 2 * windowState.x);
+			const initialHeight = Math.floor(window.innerHeight - 2 * windowState.y);
+			onSizeChange(initialWidth, initialHeight);
 		}
 	});
 
-	// Listen for restore events from toolbar
-	onMount(() => {
-		width = Math.floor(window.innerWidth - 2*x);
-		height = Math.floor(window.innerHeight -2*y);
-		
-		const handleRestore = (event: Event) => {
-			if (event instanceof CustomEvent) {
-				const customEvent = event as CustomEvent;
-				if (customEvent.detail.id === id) {
-					if (isVisible && isMinimized) {
-						isMinimized = false;
-						// Bring window to front
-						zIndex = Date.now();
-					} else if (!isVisible) {
-						isVisible = true;
-						isMinimized = false;
-						zIndex = Date.now();
-					}
-				}
-			}
-		};
-
-		window.addEventListener('restore-window', handleRestore);
-
-		return () => {
-			window.removeEventListener('restore-window', handleRestore);
-		};
-	});
-
 	function handleDragStart(event: MouseEvent) {
-		if (isMaximized) return; // Don't allow dragging when maximized
+		if (isMaximized) return;
 
 		isDragging = true;
 		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
@@ -89,18 +65,17 @@
 			y: event.clientY - rect.top
 		};
 
-		// Bring window to front
-		zIndex = Date.now();
+		onBringToFront?.();
 		event.preventDefault();
 	}
 
 	function handleResizeStart(event: MouseEvent) {
-		if (isMaximized) return; // Don't allow resizing when maximized
+		if (isMaximized) return;
 
 		isResizing = true;
 		resizeOffset = {
-			x: event.clientX - width,
-			y: event.clientY - height
+			x: event.clientX - windowState.width,
+			y: event.clientY - windowState.height
 		};
 		event.preventDefault();
 		event.stopPropagation();
@@ -108,15 +83,18 @@
 
 	function handleMouseMove(event: MouseEvent) {
 		if (isDragging && !isMaximized) {
-			x = Math.max(0, Math.min(window.innerWidth - width, event.clientX - dragOffset.x));
-			y = Math.max(0, Math.min(window.innerHeight - height, event.clientY - dragOffset.y));
+			const newX = Math.max(0, Math.min(window.innerWidth - windowState.width, event.clientX - dragOffset.x));
+			const newY = Math.max(0, Math.min(window.innerHeight - windowState.height, event.clientY - dragOffset.y));
+			onPositionChange?.(newX, newY);
 		} else if (isResizing && !isMaximized) {
 			const newWidth = Math.max(200, event.clientX - resizeOffset.x);
 			const newHeight = Math.max(150, event.clientY - resizeOffset.y);
 
 			// Prevent window from going off screen
-			width = Math.min(newWidth, window.innerWidth - x);
-			height = Math.min(newHeight, window.innerHeight - y);
+			const constrainedWidth = Math.min(newWidth, window.innerWidth - windowState.x);
+			const constrainedHeight = Math.min(newHeight, window.innerHeight - windowState.y);
+			
+			onSizeChange?.(constrainedWidth, constrainedHeight);
 		}
 	}
 
@@ -125,58 +103,58 @@
 		isResizing = false;
 	}
 
-	function closeWindow() {
-		isVisible = false;
+	function handleClose() {
+		onClose?.();
 	}
 
-	function minimizeWindow() {
-		isMinimized = true;
+	function handleMinimize() {
+		toggleMinimize?.();
 	}
 
-	function maximizeWindow() {
+	function handleMaximize() {
 		if (isMaximized) {
 			// Restore to previous size and position
-			x = previousState.x;
-			y = previousState.y;
-			width = previousState.width;
-			height = previousState.height;
+			onPositionChange?.(previousState.x, previousState.y);
+			onSizeChange?.(previousState.width, previousState.height);
 			isMaximized = false;
 		} else {
 			// Store current state before maximizing
-			previousState = { x, y, width, height };
+			previousState = { 
+				x: windowState.x, 
+				y: windowState.y, 
+				width: windowState.width, 
+				height: windowState.height 
+			};
 			// Maximize to full viewport (account for toolbar)
-			x = 0;
-			y = 0;
-			width = window.innerWidth;
-			height = window.innerHeight - 26; // Subtract toolbar height
+			onPositionChange?.(0, 0);
+			onSizeChange?.(window.innerWidth, window.innerHeight - 26);
 			isMaximized = true;
 		}
 	}
 
 	function handleWindowClick() {
-		// Bring window to front when clicked
-		zIndex = Date.now();
+		onBringToFront?.();
 	}
 </script>
 
 <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
-{#if isVisible && !isMinimized}
+{#if windowState.isOpen && !windowState.isMinimized}
 	<div
 		class="window"
-		style="left: {x}px; top: {y}px; width: {width}px; height: {height}px; z-index: {zIndex};"
+		style="left: {windowState.x}px; top: {windowState.y}px; width: {windowState.width}px; height: {windowState.height}px; z-index: {windowState.zIndex};"
 		onclick={handleWindowClick}
 	>
 		<!-- Title Bar -->
 		<div class="title-bar" onmousedown={handleDragStart} role="button" tabindex="0">
-			<span class="title">{windowTitle}</span>
+			<span class="title">{windowState.title}</span>
 			<div class="title-buttons">
-				<button class="title-button minimize-button" onclick={minimizeWindow} title="Minimize">
+				<button class="title-button minimize-button" onclick={handleMinimize} title="Minimize">
 					_
 				</button>
 				<button
 					class="title-button maximize-button"
-					onclick={maximizeWindow}
+					onclick={handleMaximize}
 					title={isMaximized ? 'Restore' : 'Maximize'}
 				>
 					{#if isMaximized}
@@ -185,7 +163,7 @@
 						□
 					{/if}
 				</button>
-				<button class="title-button close-button" onclick={closeWindow} title="Close"> × </button>
+				<button class="title-button close-button" onclick={handleClose} title="Close"> × </button>
 			</div>
 		</div>
 

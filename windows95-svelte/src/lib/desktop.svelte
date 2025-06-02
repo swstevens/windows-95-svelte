@@ -29,71 +29,126 @@
     interface WindowState {
         id: string;
         title: string;
+        isOpen: boolean;
         isMinimized: boolean;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        zIndex: number;
     }
     
-    let openWindows = $state<WindowState[]>([]);
+    // Z-index management
+    let nextZIndex = $state(1000);
+    
+    function getNextZIndex(): number {
+        return ++nextZIndex;
+    }
+    
+    // Central window state management
+    let windowStates = $state<Record<string, WindowState>>({
+        'debug-panel': {
+            id: 'debug-panel',
+            title: 'Settings',
+            isOpen: false,
+            isMinimized: false,
+            x: 50,
+            y: 50,
+            width: 800,
+            height: 600,
+            zIndex: 1000
+        },
+        'tools-window': {
+            id: 'tools-window',
+            title: 'Home',
+            isOpen: false,
+            isMinimized: false,
+            x: 80,
+            y: 80,
+            width: 800,
+            height: 600,
+            zIndex: 1001
+        }
+    });
 
-    // Window visibility states
-    let debugPanelVisible = $state(false);
-    let toolsWindowVisible = $state(false);
+    // Computed property for open windows (for toolbar)
+    let openWindows = $derived(
+        Object.values(windowStates).filter(w => w.isOpen)
+    );
 
-	// Functions to manage window state
-	function addWindow(id: string, title: string, isMinimized = false) {
-		const existingWindowIndex = openWindows.findIndex((w) => w['id'] === id);
-		if (existingWindowIndex === -1) {
-			openWindows.push({ id, title, isMinimized });
-		} else {
-			// Update existing window
-			openWindows[existingWindowIndex] = { id, title, isMinimized };
-		}
-	}
+    // Window management functions
+    function openWindow(id: string) {
+        if (windowStates[id]) {
+            windowStates[id].isOpen = true;
+            windowStates[id].isMinimized = false;
+            windowStates[id].zIndex = getNextZIndex(); // Use incremental z-index
+        }
+    }
 
-	function removeWindow(id: string) {
-		const index = openWindows.findIndex((w) => w['id'] === id);
-		if (index !== -1) {
-			openWindows.splice(index, 1);
-		}
-	}
+    function closeWindow(id: string) {
+        if (windowStates[id]) {
+            windowStates[id].isOpen = false;
+            windowStates[id].isMinimized = false;
+        }
+    }
 
-	function updateWindowState(id: string, isMinimized: boolean) {
-		const windowIndex = openWindows.findIndex((w) => w['id'] === id);
-		if (windowIndex !== -1) {
-			openWindows[windowIndex].isMinimized = isMinimized;
-		}
-	}
+    function toggleWindowMinimized(id: string) {
+        if (windowStates[id]) {
+            if (windowStates[id].isMinimized) {
+                // If minimized, restore it
+                windowStates[id].isMinimized = false;
+                windowStates[id].zIndex = getNextZIndex(); // Bring to front
+            } else {
+                // If not minimized, minimize it
+                windowStates[id].isMinimized = true;
+            }
+        }
+    }
 
-	function restoreWindow(id: string) {
-		// Dispatch custom event to restore the specific window
-		const event = new CustomEvent('restore-window', { detail: { id } });
-		window.dispatchEvent(event);
+    function updateWindowPosition(id: string, x: number, y: number) {
+        if (windowStates[id]) {
+            windowStates[id].x = x;
+            windowStates[id].y = y;
+        }
+    }
 
-		// Update the window state in our tracking
-		updateWindowState(id, false);
-	}
+    function updateWindowSize(id: string, width: number, height: number) {
+        if (windowStates[id]) {
+            windowStates[id].width = width;
+            windowStates[id].height = height;
+        }
+    }
 
-	// Handle window state changes from child Window components
-	function handleWindowStateChange(id: string, title: string) {
-		return (isVisible: boolean, isMinimized: boolean) => {
-			if (isVisible && !isMinimized) {
-				addWindow(id, title, false);
-			} else if (isVisible && isMinimized) {
-				updateWindowState(id, true);
-			} else {
-				removeWindow(id);
-			}
-		};
-	}
+    function bringToFront(id: string) {
+        if (windowStates[id]) {
+            windowStates[id].zIndex = getNextZIndex();
+        }
+    }
 
     // Button click handlers
-    function showDebugPanel() {
-        debugPanelVisible = true;
+    function handleDebugPanelButton() {
+        const state = windowStates['debug-panel'];
+        if (!state.isOpen) {
+            openWindow('debug-panel');
+        } else if (state.isMinimized) {
+            toggleWindowMinimized('debug-panel');
+        } else {
+            bringToFront('debug-panel');
+        }
     }
 
-    function showToolsWindow() {
-        toolsWindowVisible = true;
+    function handleToolsButton() {
+        const state = windowStates['tools-window'];
+        if (!state.isOpen) {
+            openWindow('tools-window');
+        } else if (state.isMinimized) {
+            toggleWindowMinimized('tools-window');
+        } else {
+            bringToFront('tools-window');
+        }
     }
 </script>
+
 <Scanlines 
   scanWidth={2} 
   scanlineSpeed={30}
@@ -117,35 +172,37 @@
 		showButtonPosition="top-right"
 		showButtonText="Debug Panel"
 		buttonIndex={1}
-		isVisible={debugPanelVisible}
-		onclick={showDebugPanel}
+		isVisible={windowStates['debug-panel'].isOpen}
+		onclick={handleDebugPanelButton}
 	/>
 
 	<WindowButton
 		showButtonPosition="top-right"
 		showButtonText="Tools"
 		buttonIndex={2}
-		isVisible={toolsWindowVisible}
-		onclick={showToolsWindow}
+		isVisible={windowStates['tools-window'].isOpen}
+		onclick={handleToolsButton}
 	/>
 
 	<!-- Window Managers -->
 	<WindowManager
-		id="debug-panel"
-		windowTitle="Settings"
-		buttonIndex={1}
-		bind:isVisible={debugPanelVisible}
-		onWindowStateChange={handleWindowStateChange('debug-panel', 'Settings')}
+		windowState={windowStates['debug-panel']}
+		onClose={() => closeWindow('debug-panel')}
+		toggleMinimize={() => toggleWindowMinimized('debug-panel')}
+		onPositionChange={(x, y) => updateWindowPosition('debug-panel', x, y)}
+		onSizeChange={(w, h) => updateWindowSize('debug-panel', w, h)}
+		onBringToFront={() => bringToFront('debug-panel')}
 	>
 		<PortfolioPage />
 	</WindowManager>
 
 	<WindowManager
-		id="tools-window"
-		windowTitle="Home"
-		buttonIndex={2}
-		bind:isVisible={toolsWindowVisible}
-		onWindowStateChange={handleWindowStateChange('tools-window', 'Home')}
+		windowState={windowStates['tools-window']}
+		onClose={() => closeWindow('tools-window')}
+		toggleMinimize={() => toggleWindowMinimized('tools-window')}
+		onPositionChange={(x, y) => updateWindowPosition('tools-window', x, y)}
+		onSizeChange={(w, h) => updateWindowSize('tools-window', w, h)}
+		onBringToFront={() => bringToFront('tools-window')}
 	>
 		<PortfolioPage />
 	</WindowManager>
@@ -154,9 +211,10 @@
 
 	<!-- Toolbar at bottom -->
 	<div class="toolbar">
-		<Toolbar {openWindows} {restoreWindow} />
+		<Toolbar openWindows={openWindows} onWindowToggle={toggleWindowMinimized} />
 	</div>
 </div>
+
 <style>
 	.desktop {
 		background-color: #018281;
@@ -165,12 +223,15 @@
 		flex-direction: column;
 		position: relative;
 		flex-grow: 1;
+		/* Establish stacking context */
+		z-index: 0;
 	}
 
 	.main-screen {
 		flex-grow: 1;
 		position: relative;
 		overflow: hidden;
+		z-index: 1;
 	}
 
 	.desktop-content {
