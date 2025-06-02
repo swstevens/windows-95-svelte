@@ -8,23 +8,6 @@
     import PortfolioPage from './pages/portfolio_page.svelte';
     import Clippy from './clippy.svelte';
 	import Scanlines from './scanlines.svelte';
-	
-    const OBJECTS = {
-		Portfolio: {
-			key: 'About Me',
-			icon: 'assets/myComputer.png',
-			page: Placeholder,
-			top: 12,
-			left: 12
-		},
-		Doom: {
-			key: 'Doom',
-			icon: 'assets/doom.ico',
-			page: Placeholder,
-			top: 92,
-			left: 12
-		}
-	};
 
     interface WindowState {
         id: string;
