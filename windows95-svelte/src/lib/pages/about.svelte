@@ -117,13 +117,7 @@
 		border-right: 0;
 		margin: 8px 0;
 	}
-
-	.resume-printer {
-		width: 42px;
-		height: 36px;
-		margin-right: 16px;
-	}
-
+    
 	.resume-container-text h3 {
 		margin: 0 0 4px 0;
 	}

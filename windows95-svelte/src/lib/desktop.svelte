@@ -2,9 +2,12 @@
 	import { onMount } from 'svelte';
 	import Placeholder from './placeholder.svelte';
 	import Toolbar from './toolbar.svelte';
-	import Window from './window.svelte';
+	import WindowButton from './window-button.svelte';
+	import WindowManager from './window-manager.svelte';
 	import Settings from './settings.svelte';
     import PortfolioPage from './pages/portfolio_page.svelte';
+    import Clippy from './clippy.svelte';
+	import Scanlines from './scanlines.svelte';
 	
     const OBJECTS = {
 		Portfolio: {
@@ -22,15 +25,21 @@
 			left: 12
 		}
 	};
+
     interface WindowState {
-    id: string;
-    title: string;
-    isMinimized: boolean;
+        id: string;
+        title: string;
+        isMinimized: boolean;
     }
+    
     let openWindows = $state<WindowState[]>([]);
 
+    // Window visibility states
+    let debugPanelVisible = $state(false);
+    let toolsWindowVisible = $state(false);
+
 	// Functions to manage window state
-	function addWindow(id:string, title:string, isMinimized = false) {
+	function addWindow(id: string, title: string, isMinimized = false) {
 		const existingWindowIndex = openWindows.findIndex((w) => w['id'] === id);
 		if (existingWindowIndex === -1) {
 			openWindows.push({ id, title, isMinimized });
@@ -40,21 +49,21 @@
 		}
 	}
 
-	function removeWindow(id:string) {
+	function removeWindow(id: string) {
 		const index = openWindows.findIndex((w) => w['id'] === id);
 		if (index !== -1) {
 			openWindows.splice(index, 1);
 		}
 	}
 
-	function updateWindowState(id:string, isMinimized:boolean) {
+	function updateWindowState(id: string, isMinimized: boolean) {
 		const windowIndex = openWindows.findIndex((w) => w['id'] === id);
 		if (windowIndex !== -1) {
 			openWindows[windowIndex].isMinimized = isMinimized;
 		}
 	}
 
-	function restoreWindow(id:string) {
+	function restoreWindow(id: string) {
 		// Dispatch custom event to restore the specific window
 		const event = new CustomEvent('restore-window', { detail: { id } });
 		window.dispatchEvent(event);
@@ -64,8 +73,8 @@
 	}
 
 	// Handle window state changes from child Window components
-	function handleWindowStateChange(id:string, title:string) {
-		return (isVisible:boolean, isMinimized:boolean) => {
+	function handleWindowStateChange(id: string, title: string) {
+		return (isVisible: boolean, isMinimized: boolean) => {
 			if (isVisible && !isMinimized) {
 				addWindow(id, title, false);
 			} else if (isVisible && isMinimized) {
@@ -75,8 +84,20 @@
 			}
 		};
 	}
-</script>
 
+    // Button click handlers
+    function showDebugPanel() {
+        debugPanelVisible = true;
+    }
+
+    function showToolsWindow() {
+        toolsWindowVisible = true;
+    }
+</script>
+<Scanlines 
+  scanWidth={2} 
+  scanlineSpeed={30}
+/>
 <div class="desktop">
 	<!-- shortcut icons -->
 	<!-- {#each entries as [name,object]}
@@ -91,36 +112,51 @@
 		<div class="desktop-content"></div>
 	</div>
 
-	<!-- Windows -->
-	<Window
-		id="debug-panel"
+	<!-- Window Buttons -->
+	<WindowButton
 		showButtonPosition="top-right"
 		showButtonText="Debug Panel"
 		buttonIndex={1}
-		contentProps={{ theme: 'dark', username: 'John' }}
-		windowTitle="Settings"
-		onWindowStateChange={handleWindowStateChange('debug-panel', 'Settings')}
-	>
-		<PortfolioPage />
-	</Window>
+		isVisible={debugPanelVisible}
+		onclick={showDebugPanel}
+	/>
 
-	<Window
-		id="tools-window"
+	<WindowButton
 		showButtonPosition="top-right"
 		showButtonText="Tools"
 		buttonIndex={2}
+		isVisible={toolsWindowVisible}
+		onclick={showToolsWindow}
+	/>
+
+	<!-- Window Managers -->
+	<WindowManager
+		id="debug-panel"
+		windowTitle="Settings"
+		buttonIndex={1}
+		bind:isVisible={debugPanelVisible}
+		onWindowStateChange={handleWindowStateChange('debug-panel', 'Settings')}
+	>
+		<PortfolioPage />
+	</WindowManager>
+
+	<WindowManager
+		id="tools-window"
 		windowTitle="Home"
+		buttonIndex={2}
+		bind:isVisible={toolsWindowVisible}
 		onWindowStateChange={handleWindowStateChange('tools-window', 'Home')}
 	>
 		<PortfolioPage />
-	</Window>
+	</WindowManager>
+
+    <Clippy />
 
 	<!-- Toolbar at bottom -->
 	<div class="toolbar">
 		<Toolbar {openWindows} {restoreWindow} />
 	</div>
 </div>
-
 <style>
 	.desktop {
 		background-color: #018281;
