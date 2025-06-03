@@ -38,17 +38,15 @@
 <svelte:window on:resize={handleResize} />
 
 <div class="app-content">
+	<Navigation {currentPage} onNavigate={navigateTo}/> 
+	<!-- TODO very small pages don't center well, and the heaadspin will overlap the navigation bar -->
 	{#if currentPage === 'Home'}
-		<Navigation {currentPage} onNavigate={navigateTo} />
 		<Home {windowWidth} />
 	{:else if currentPage === 'About'}
-		<Navigation {currentPage} onNavigate={navigateTo} />
 		<About />
 	{:else if currentPage === 'Experience'}
-		<Navigation {currentPage} onNavigate={navigateTo} />
 		<Experience />
 	{:else if currentPage === 'Projects'}
-		<Navigation {currentPage} onNavigate={navigateTo} />
 		<Projects />
 	{/if}
 </div>

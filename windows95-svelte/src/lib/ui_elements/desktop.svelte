@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import Placeholder from './placeholder.svelte';
 	import Toolbar from './toolbar.svelte';
 	import WindowButton from './window-button.svelte';
 	import WindowManager from './window-manager.svelte';
-	import Settings from './settings.svelte';
-    import PortfolioPage from './pages/portfolio_page.svelte';
-    import Clippy from './clippy.svelte';
+    import PortfolioPage from '../pages/portfolio_page.svelte';
+    import Clippy from './clippy/clippy.svelte';
+    import ClippyChat from './clippy/clippy-chat.svelte';
 	import Scanlines from './scanlines.svelte';
 
     interface WindowState {
@@ -51,6 +49,17 @@
             width: 800,
             height: 600,
             zIndex: 1001
+        },
+        'clippy-chat': {
+            id: 'clippy-chat',
+            title: '💬 Chat with Clippy',
+            isOpen: false,
+            isMinimized: false,
+            x: 200,
+            y: 150,
+            width: 400,
+            height: 500,
+            zIndex: 1002
         }
     });
 
@@ -64,7 +73,7 @@
         if (windowStates[id]) {
             windowStates[id].isOpen = true;
             windowStates[id].isMinimized = false;
-            windowStates[id].zIndex = getNextZIndex(); // Use incremental z-index
+            windowStates[id].zIndex = getNextZIndex();
         }
     }
 
@@ -80,7 +89,7 @@
             if (windowStates[id].isMinimized) {
                 // If minimized, restore it
                 windowStates[id].isMinimized = false;
-                windowStates[id].zIndex = getNextZIndex(); // Bring to front
+                windowStates[id].zIndex = getNextZIndex();
             } else {
                 // If not minimized, minimize it
                 windowStates[id].isMinimized = true;
@@ -128,6 +137,18 @@
             toggleWindowMinimized('tools-window');
         } else {
             bringToFront('tools-window');
+        }
+    }
+
+    // Clippy chat handler
+    function handleClippyChatRequest() {
+        const state = windowStates['clippy-chat'];
+        if (!state.isOpen) {
+            openWindow('clippy-chat');
+        } else if (state.isMinimized) {
+            toggleWindowMinimized('clippy-chat');
+        } else {
+            bringToFront('clippy-chat');
         }
     }
 </script>
@@ -190,7 +211,18 @@
 		<PortfolioPage />
 	</WindowManager>
 
-    <Clippy />
+	<WindowManager
+		windowState={windowStates['clippy-chat']}
+		onClose={() => closeWindow('clippy-chat')}
+		toggleMinimize={() => toggleWindowMinimized('clippy-chat')}
+		onPositionChange={(x, y) => updateWindowPosition('clippy-chat', x, y)}
+		onSizeChange={(w, h) => updateWindowSize('clippy-chat', w, h)}
+		onBringToFront={() => bringToFront('clippy-chat')}
+	>
+		<ClippyChat />
+	</WindowManager>
+
+    <Clippy onRequestChatWindow={handleClippyChatRequest} />
 
 	<!-- Toolbar at bottom -->
 	<div class="toolbar">
@@ -226,7 +258,7 @@
 
 	.toolbar {
 		position: relative;
-		z-index: 100;
+		z-index: 1000000;
 	}
 
 	.minimized {

@@ -173,7 +173,7 @@
 			x = 0;
 			y = 0;
 			width = window.innerWidth;
-			height = window.innerHeight - 26; // Subtract toolbar height
+			height = window.innerHeight -48; // Subtract toolbar height
 			isMaximized = true;
 		}
 	}

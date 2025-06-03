@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Desktop from '$lib/desktop.svelte';
+	import Desktop from '$lib/ui_elements/desktop.svelte';
 </script>
 
 <div class="parent"><Desktop></Desktop></div>
