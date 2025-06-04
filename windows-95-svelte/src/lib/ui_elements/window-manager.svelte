@@ -262,6 +262,7 @@
 		.minimize-button {
 			font-size: 12px;
 			padding-top: 2px;
+			padding-bottom: 10px;
 		}
 
 		.maximize-button {
