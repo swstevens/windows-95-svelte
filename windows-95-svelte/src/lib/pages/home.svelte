@@ -1,5 +1,7 @@
 <script lang="ts">
 	// Props interface
+
+	import { base } from '$app/paths';
 	interface Props {
 		windowWidth: number;
 	}
@@ -9,7 +11,7 @@
 
 <div class="page home-page">
 	<div class="image-section">
-		<img src="/headspin-square-unscreen.gif" alt="my head" class="headspin" />
+		<img src="{base}/headspin-square-unscreen.gif" alt="my head" class="headspin" />
 	</div>
 	<div class="info-section">
 		<h1 class={windowWidth <= 480 ? 'center-text' : ''}>SHEA STEVENS</h1>

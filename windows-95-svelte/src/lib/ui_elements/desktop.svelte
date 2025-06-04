@@ -1,11 +1,13 @@
 <script lang="ts">
 	import Toolbar from './toolbar.svelte';
-	import WindowButton from './window-button.svelte';
+	import DesktopShortcut from './desktop-shortcut.svelte'; // Updated import
 	import WindowManager from './window-manager.svelte';
     import PortfolioPage from '../pages/portfolio_page.svelte';
     import Clippy from './clippy/clippy.svelte';
     import ClippyChat from './clippy/clippy-chat.svelte';
 	import Scanlines from './scanlines.svelte';
+	import { base } from '$app/paths';
+    
 
     interface WindowState {
         id: string;
@@ -17,6 +19,7 @@
         width: number;
         height: number;
         zIndex: number;
+        iconUrl?: string; // Added icon URL property
     }
     
     // Z-index management
@@ -37,7 +40,8 @@
             y: 50,
             width: 800,
             height: 600,
-            zIndex: 1000
+            zIndex: 1000,
+            iconUrl: `${base}/icons/computer-4.png` // Add your icon paths
         },
         'tools-window': {
             id: 'tools-window',
@@ -48,7 +52,8 @@
             y: 80,
             width: 800,
             height: 600,
-            zIndex: 1001
+            zIndex: 1001,
+            iconUrl: `${base}/icons/directory_closed_cool-3.png`
         },
         'clippy-chat': {
             id: 'clippy-chat',
@@ -59,7 +64,8 @@
             y: 150,
             width: 400,
             height: 500,
-            zIndex: 1002
+            zIndex: 1002,
+            iconUrl: `${base}/icons/html2-5.png`
         }
     });
 
@@ -158,35 +164,30 @@
   scanlineSpeed={30}
 />
 <div class="desktop">
-	<!-- shortcut icons -->
-	<!-- {#each entries as [name,object]}
-        <div class="item-{object.key}">
-            <Placeholder/>
-        </div>
-    {/each} -->
+	<!-- Desktop Shortcuts -->
+	<DesktopShortcut
+		showButtonPosition="top-left"
+		showButtonText="Settings"
+		buttonIndex={0}
+		isVisible={!windowStates['debug-panel'].isOpen}
+		imageUrl={windowStates['debug-panel'].iconUrl}
+		onclick={handleDebugPanelButton}
+	/>
+
+	<DesktopShortcut
+		showButtonPosition="top-left"
+		showButtonText="Home"
+		buttonIndex={1}
+		isVisible={!windowStates['tools-window'].isOpen}
+		imageUrl={windowStates['tools-window'].iconUrl}
+		onclick={handleToolsButton}
+	/>
 
 	<!-- window management -->
 	<div class="main-screen">
 		<!-- Main desktop content -->
 		<div class="desktop-content"></div>
 	</div>
-
-	<!-- Window Buttons -->
-	<WindowButton
-		showButtonPosition="top-right"
-		showButtonText="Debug Panel"
-		buttonIndex={1}
-		isVisible={windowStates['debug-panel'].isOpen}
-		onclick={handleDebugPanelButton}
-	/>
-
-	<WindowButton
-		showButtonPosition="top-right"
-		showButtonText="Tools"
-		buttonIndex={2}
-		isVisible={windowStates['tools-window'].isOpen}
-		onclick={handleToolsButton}
-	/>
 
 	<!-- Window Managers -->
 	<WindowManager

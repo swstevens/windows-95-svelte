@@ -95,7 +95,7 @@
     .project-item {
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #d0d0d0;
+      border-bottom: 2px solid #d0d0d0;
     }
   
     .project-item:last-child {

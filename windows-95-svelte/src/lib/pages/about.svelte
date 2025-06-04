@@ -112,7 +112,8 @@
 		display: flex;
 		align-items: center;
 		padding: 8px;
-		border: 2px solid #000;
+		border: 2px solid #d0d0d0;
+
 		border-left: 0;
 		border-right: 0;
 		margin: 8px 0;
