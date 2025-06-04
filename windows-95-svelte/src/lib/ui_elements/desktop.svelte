@@ -7,7 +7,7 @@
     import ClippyChat from './clippy/clippy-chat.svelte';
 	import Scanlines from './scanlines.svelte';
 	import { base } from '$app/paths';
-    
+    import window from '$lib/window.svelte';    
 
     interface WindowState {
         id: string;
@@ -31,30 +31,30 @@
     
     // Central window state management
     let windowStates = $state<Record<string, WindowState>>({
-        'debug-panel': {
-            id: 'debug-panel',
-            title: 'Settings',
-            isOpen: false,
+        'portfolio': {
+            id: 'portfolio',
+            title: 'Portfolio',
+            isOpen: true,
             isMinimized: false,
             x: 50,
             y: 50,
             width: 800,
             height: 600,
-            zIndex: 1000,
+            zIndex: 1005,
             iconUrl: `${base}/icons/computer-4.png` // Add your icon paths
         },
-        'tools-window': {
-            id: 'tools-window',
-            title: 'Home',
-            isOpen: false,
-            isMinimized: false,
-            x: 80,
-            y: 80,
-            width: 800,
-            height: 600,
-            zIndex: 1001,
-            iconUrl: `${base}/icons/directory_closed_cool-3.png`
-        },
+        // 'tools-window': {
+        //     id: 'tools-window',
+        //     title: 'Home',
+        //     isOpen: false,
+        //     isMinimized: false,
+        //     x: 80,
+        //     y: 80,
+        //     width: 800,
+        //     height: 600,
+        //     zIndex: 1001,
+        //     iconUrl: `${base}/icons/directory_closed_cool-3.png`
+        // },
         'clippy-chat': {
             id: 'clippy-chat',
             title: '💬 Chat with Clippy',
@@ -125,13 +125,13 @@
 
     // Button click handlers
     function handleDebugPanelButton() {
-        const state = windowStates['debug-panel'];
+        const state = windowStates['portfolio'];
         if (!state.isOpen) {
-            openWindow('debug-panel');
+            openWindow('portfolio');
         } else if (state.isMinimized) {
-            toggleWindowMinimized('debug-panel');
+            toggleWindowMinimized('portfolio');
         } else {
-            bringToFront('debug-panel');
+            bringToFront('portfolio');
         }
     }
 
@@ -167,21 +167,21 @@
 	<!-- Desktop Shortcuts -->
 	<DesktopShortcut
 		showButtonPosition="top-left"
-		showButtonText="Settings"
+		showButtonText="Portfolio"
 		buttonIndex={0}
-		isVisible={!windowStates['debug-panel'].isOpen}
-		imageUrl={windowStates['debug-panel'].iconUrl}
+		isVisible={!windowStates['portfolio'].isOpen}
+		imageUrl={windowStates['portfolio'].iconUrl}
 		onclick={handleDebugPanelButton}
 	/>
 
-	<DesktopShortcut
+	<!-- <DesktopShortcut
 		showButtonPosition="top-left"
 		showButtonText="Home"
 		buttonIndex={1}
 		isVisible={!windowStates['tools-window'].isOpen}
 		imageUrl={windowStates['tools-window'].iconUrl}
 		onclick={handleToolsButton}
-	/>
+	/> -->
 
 	<!-- window management -->
 	<div class="main-screen">
@@ -191,17 +191,17 @@
 
 	<!-- Window Managers -->
 	<WindowManager
-		windowState={windowStates['debug-panel']}
-		onClose={() => closeWindow('debug-panel')}
-		toggleMinimize={() => toggleWindowMinimized('debug-panel')}
-		onPositionChange={(x, y) => updateWindowPosition('debug-panel', x, y)}
-		onSizeChange={(w, h) => updateWindowSize('debug-panel', w, h)}
-		onBringToFront={() => bringToFront('debug-panel')}
+		windowState={windowStates['portfolio']}
+		onClose={() => closeWindow('portfolio')}
+		toggleMinimize={() => toggleWindowMinimized('portfolio')}
+		onPositionChange={(x, y) => updateWindowPosition('portfolio', x, y)}
+		onSizeChange={(w, h) => updateWindowSize('portfolio', w, h)}
+		onBringToFront={() => bringToFront('portfolio')}
 	>
 		<PortfolioPage />
 	</WindowManager>
 
-	<WindowManager
+	<!-- <WindowManager
 		windowState={windowStates['tools-window']}
 		onClose={() => closeWindow('tools-window')}
 		toggleMinimize={() => toggleWindowMinimized('tools-window')}
@@ -210,7 +210,7 @@
 		onBringToFront={() => bringToFront('tools-window')}
 	>
 		<PortfolioPage />
-	</WindowManager>
+	</WindowManager> -->
 
 	<WindowManager
 		windowState={windowStates['clippy-chat']}
