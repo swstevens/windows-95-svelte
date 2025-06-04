@@ -1,7 +1,6 @@
 # Windows 95 Svelte
 
-This repository contains a project that recreates the Windows 95 interface using modern Svelte.
-
+This repository contains a project that recreates the Windows 95 interface using modern Svelte. Deployment automatically handled by Github Actions. Hosted here: https://swstevens.github.io/windows-95-svelte/
 ## Features
 
 - **Authentic Design**: Faithful recreation of the Windows 95 UI.
@@ -12,7 +11,7 @@ This repository contains a project that recreates the Windows 95 interface using
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/windows-95-svelte.git
+    git clone https://github.com/swstevens/windows-95-svelte.git
     ```
 2. Navigate to the project directory:
     ```bash
