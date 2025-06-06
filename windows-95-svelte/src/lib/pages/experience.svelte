@@ -60,7 +60,8 @@
     h2 {
       margin: 0 0 16px 0;
       color: #000;
-      font-family: 'MS Sans Serif', sans-serif;
+      font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
+		letter-spacing: 1px;
       font-size: 14px;
       font-weight: bold;
     }
@@ -68,13 +69,15 @@
     h3 {
       margin: 0 0 8px 0;
       color: #000;
-      font-family: 'MS Sans Serif', sans-serif;
+      font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
+		letter-spacing: 1px;
       font-size: 12px;
       font-weight: bold;
     }
   
     p {
       margin: 0 0 8px 0;
+      font-family: "Open Sans", sans-serif;
       font-size: 11px;
       line-height: 1.4;
     }

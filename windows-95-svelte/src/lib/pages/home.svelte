@@ -58,8 +58,9 @@
 	h1 {
 		margin: 0 0 20px 0;
 		color: #000;
-		font-family: 'MS Sans Serif', sans-serif;
-		font-size: 18px;
+		font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
+		letter-spacing: 1px;
+		font-size: 72px;
 		font-weight: bold;
 	}
 
