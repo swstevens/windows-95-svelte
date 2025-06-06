@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Toolbar from './toolbar.svelte';
 	import DesktopShortcut from './desktop-shortcut.svelte'; // Updated import
 	import WindowManager from './window-manager.svelte';
@@ -29,12 +30,15 @@
         return ++nextZIndex;
     }
     
+    // Add mounted state
+    let isMounted = $state(false);
+    
     // Central window state management
     let windowStates = $state<Record<string, WindowState>>({
         'portfolio': {
             id: 'portfolio',
             title: 'Portfolio',
-            isOpen: true,
+            isOpen: false, // Changed to false initially
             isMinimized: false,
             x: 50,
             y: 50,
@@ -67,6 +71,15 @@
             zIndex: 1002,
             iconUrl: `${base}/icons/html2-5.png`
         }
+    });
+
+    // Mount handler to open portfolio after everything is ready
+    onMount(() => {
+        // Use a small delay to ensure all components are fully rendered
+        setTimeout(() => {
+            isMounted = true;
+            openWindow('portfolio');
+        }, 50); // 50ms delay should be enough for rendering to complete
     });
 
     // Computed property for open windows (for toolbar)
