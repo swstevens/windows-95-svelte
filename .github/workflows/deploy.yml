@@ -24,7 +24,7 @@ jobs:
 
       - name: Build
         env:
-          BASE_PATH: '/windows-95-svelte'
+          BASE_PATH: '/'
         run: npm run build
         working-directory: ./windows-95-svelte
 

@@ -13,7 +13,7 @@ const config = {
       strict: true
     }),
     paths: {
-      base: process.env.NODE_ENV === 'production' ? '/windows-95-svelte' : ''
+      base: process.env.NODE_ENV === 'production' ? '/' : ''
     }
   }
 };
