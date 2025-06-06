@@ -76,9 +76,10 @@
     }
   
     p {
-      margin: 0 0 8px 0;
       font-family: "Open Sans", sans-serif;
-      font-size: 11px;
+      font-weight: 500;
+      margin: 0 0 8px 0;
+      font-size: 12px;
       line-height: 1.4;
     }
   

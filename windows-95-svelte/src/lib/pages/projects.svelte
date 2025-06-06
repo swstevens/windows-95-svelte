@@ -74,8 +74,8 @@
       margin: 0 0 16px 0;
       color: #000;
       font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-		letter-spacing: 1px;
-      font-size: 14px;
+		  letter-spacing: 1px;
+      font-size: 16px;
       font-weight: bold;
     }
   
@@ -84,15 +84,16 @@
       color: #000;
       font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
 		letter-spacing: 1px;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: bold;
     }
   
     p {
       font-family: "Open Sans", sans-serif;
-      margin: 0 0 8px 0;
-      font-size: 11px;
-      line-height: 1.4;
+		font-weight: 500;
+		margin: 0 0 8px 0;
+		font-size: 12px;
+		line-height: 1.4;
     }
   
     .project-item {
@@ -116,7 +117,7 @@
       font-family: "Open Sans", sans-serif;
       color: #0000ee;
       text-decoration: underline;
-      font-size: 11px;
+      font-size: 12px;
       display: block;
       margin-bottom: 8px;
     }
