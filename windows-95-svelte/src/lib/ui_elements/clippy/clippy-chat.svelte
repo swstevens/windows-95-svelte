@@ -50,7 +50,7 @@
       isTyping = true;
       
       try {
-        const response = await fetch('http://swstevens.duckdns.org/chat', {
+        const response = await fetch('https://swstevens.duckdns.org:8443/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
