@@ -31,7 +31,7 @@
     }
     
     async function sendMessage() {
-      if (!userInput.trim()) return;
+      if (!userInput.trim() || isTyping) return;
       
       const userMessage = userInput.trim();
       userInput = '';
@@ -49,35 +49,40 @@
       // Show typing indicator
       isTyping = true;
       
-      // Simulate AI response (replace with actual AI call)
-      setTimeout(() => {
-        const responses = [
-          "That's an interesting question! Let me help you with that.",
-          "I'd be happy to assist you with that task!",
-          "Great question! Here's what I think...",
-          "I can definitely help you figure that out!",
-          "Let me process that for you...",
-          "That's a common challenge. Here's my suggestion:",
-          "I understand what you're looking for. Let me explain:",
-          "Good thinking! Here's how I'd approach that:",
-          "This is a really long response to test text wrapping and see how well the speech bubbles handle extended content that might span multiple lines and contain supercalifragilisticexpialidocious words that are extraordinarily long.",
-          "Testing with URLs like https://www.verylongdomainnamethatmightcauseoverflowissues.com/very/long/path/names",
-          "Numbers: 1234567890123456789012345678901234567890"
-        ];
+      try {
+        const response = await fetch('http://swstevens.duckdns.org/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userMessage }),
+        });
         
-        const response = responses[Math.floor(Math.random() * responses.length)];
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
+        const data = await response.json();
+        
+        // Add AI response to history
         chatHistory.push({
           sender: 'clippy',
-          message: response,
+          message: data.response || data.message || 'Sorry, I didn\'t understand that.',
           timestamp: new Date()
         });
         
+      } catch (error) {
+        console.error('Error sending message:', error);
+        chatHistory.push({
+          sender: 'clippy',
+          message: 'Sorry, I\'m having trouble connecting right now. Please try again later.',
+          timestamp: new Date()
+        });
+      } finally {
         isTyping = false;
-        
         // Scroll to bottom after AI response
         setTimeout(scrollToBottom, 50);
-      }, 1500);
+      }
     }
     
     function handleKeyPress(event: KeyboardEvent) {
@@ -118,8 +123,9 @@
       onkeypress={handleKeyPress}
       placeholder="Ask Clippy anything..."
       class="input-field"
+      disabled={isTyping}
     />
-    <button onclick={sendMessage} class="send-btn">Send</button>
+    <button onclick={sendMessage} class="send-btn" disabled={isTyping}>Send</button>
   </div>
 </div>
 
@@ -224,6 +230,11 @@
     min-width: 0;
   }
 
+  .input-field:disabled {
+    background: #e0e0e0;
+    color: #808080;
+  }
+
   .send-btn {
     background: #c0c0c0;
     border: 1px outset #c0c0c0;
@@ -236,6 +247,12 @@
 
   .send-btn:active {
     border: 1px inset #c0c0c0;
+  }
+
+  .send-btn:disabled {
+    background: #e0e0e0;
+    color: #808080;
+    cursor: not-allowed;
   }
 
   /* Scrollbar styling for Windows 95 feel */
