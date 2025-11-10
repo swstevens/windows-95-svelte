@@ -14,9 +14,7 @@
 		
 		<div class="text-block">
 			<p>
-				I'm a full stack software engineer looking for employment! I was born and raised in Hawaii, and in 2021 I graduated from 
-				the University of Oregon
-				with my BS in Computer Science. Minors in Mathematics and Japanese. 
+				I'm a full stack software engineer and active master's student at the University of Hawaii - Manoa, studying AI and Data Science. I was born and raised in Hawaii, and in 2021 I graduated from the University of Oregon with my BS in Computer Science. Minors in Mathematics and Japanese.
 			</p>
 			<p>
 				Thank you for taking the time to check out my portfolio. I

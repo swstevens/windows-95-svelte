@@ -11,20 +11,20 @@
       <h2>Projects</h2>
       
       <div class="project-item">
-        <h3>THIS WEBSITE</h3>
-        <p class="subtitle">A react website in all its Win95 goodness</p>
-        <a href="https://github.com/swstevens/internal-site">https://github.com/swstevens/internal-site</a>
+        <h3>AGENTIC CAG SYSTEM</h3>
+        <p class="subtitle">An intelligent system combining agentic AI with context-aware generation</p>
+        <a href="https://github.com/swstevens/agentic-cag-system">https://github.com/swstevens/agentic-cag-system</a>
         <p>
-          My current portfolio website, inspired by another portfolio website by Henry Heffernan. Written in React, Javascript, and CSS. Hosted on Github Pages.
+          An advanced system that leverages agentic AI architectures with context-aware generation techniques. Demonstrates modern AI system design patterns and autonomous agent coordination.
         </p>
       </div>
-  
+
       <div class="project-item">
-        <h3>PS1 SHADER</h3>
-        <p class="subtitle">A recreation of ps1 era graphics in Godot</p>
-        <a href="https://github.com/swstevens/Godot-and-Shaders">https://github.com/swstevens/Godot-and-Shaders</a>
+        <h3>RAG CHATBOT (GO)</h3>
+        <p class="subtitle">A retrieval-augmented generation chatbot built with Go</p>
+        <a href="https://github.com/swstevens/rag-chatbot-go">https://github.com/swstevens/rag-chatbot-go</a>
         <p>
-          A case study on how older generations of game consoles rendered graphics. While WIP, has functional rendering of vertex jittering texture warping. Written in Godot and GLSL.
+          A high-performance RAG chatbot implementation written in Go. Combines retrieval-augmented generation techniques for intelligent context-aware responses. Showcases Go's efficiency and concurrency features.
         </p>
       </div>
   
