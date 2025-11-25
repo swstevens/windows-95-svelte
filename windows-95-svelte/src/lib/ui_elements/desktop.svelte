@@ -1,18 +1,19 @@
 <svelte:head>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </svelte:head>
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Toolbar from './toolbar.svelte';
-	import DesktopShortcut from './desktop-shortcut.svelte'; // Updated import
+	import DesktopShortcut from './desktop-shortcut.svelte';
 	import WindowManager from './window-manager.svelte';
     import PortfolioPage from '../pages/portfolio_page.svelte';
+    import Blog from '../pages/blog.svelte';
     import Clippy from './clippy/clippy.svelte';
     import ClippyChat from './clippy/clippy-chat.svelte';
 	import Scanlines from './scanlines.svelte';
 	import { base } from '$app/paths';
-    import window from '$lib/window.svelte';    
 
     interface WindowState {
         id: string;
@@ -24,64 +25,94 @@
         width: number;
         height: number;
         zIndex: number;
-        iconUrl?: string; // Added icon URL property
+        iconUrl?: string;
+        position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+        component?: any;
     }
-    
+
+    interface WindowConfig {
+        title: string;
+        iconUrl: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        component: any;
+        position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+    }
+
     // Z-index management
     let nextZIndex = $state(1000);
-    
+
     function getNextZIndex(): number {
         return ++nextZIndex;
     }
-    
-    // Add mounted state
-    let isMounted = $state(false);
-    
-    // Central window state management
-    let windowStates = $state<Record<string, WindowState>>({
+
+    // Window configuration dictionary
+    const windowConfigs: Record<string, WindowConfig> = {
         'portfolio': {
-            id: 'portfolio',
             title: 'Portfolio',
-            isOpen: false, // Changed to false initially
-            isMinimized: false,
+            iconUrl: `${base}/icons/computer-4.png`,
             x: 50,
             y: 50,
             width: 800,
             height: 600,
-            zIndex: 1005,
-            iconUrl: `${base}/icons/computer-4.png` // Add your icon paths
+            component: PortfolioPage,
+            position: 'top-left'
         },
-        // 'tools-window': {
-        //     id: 'tools-window',
-        //     title: 'Home',
-        //     isOpen: false,
-        //     isMinimized: false,
-        //     x: 80,
-        //     y: 80,
-        //     width: 800,
-        //     height: 600,
-        //     zIndex: 1001,
-        //     iconUrl: `${base}/icons/directory_closed_cool-3.png`
-        // },
+        'blog': {
+            title: 'Blog',
+            iconUrl: `${base}/icons/html2-5.png`,
+            x: 100,
+            y: 100,
+            width: 700,
+            height: 550,
+            component: Blog,
+            position: 'top-left'
+        },
         'clippy-chat': {
-            id: 'clippy-chat',
             title: '💬 Chat with Clippy',
-            isOpen: false,
-            isMinimized: false,
+            iconUrl: `${base}/icons/html2-5.png`,
             x: 200,
             y: 150,
             width: 400,
             height: 500,
-            zIndex: 1002,
-            iconUrl: `${base}/icons/html2-5.png`
+            component: ClippyChat,
+            position: 'top-left'
         }
-    });
+    };
+
+    // Initialize window states from config
+    function initializeWindowStates(): Record<string, WindowState> {
+        const states: Record<string, WindowState> = {};
+
+        for (const [id, config] of Object.entries(windowConfigs)) {
+            states[id] = {
+                id,
+                title: config.title,
+                isOpen: false,
+                isMinimized: false,
+                x: config.x,
+                y: config.y,
+                width: config.width,
+                height: config.height,
+                zIndex: 1000,
+                iconUrl: config.iconUrl,
+                position: config.position,
+                component: config.component
+            };
+        }
+
+        return states;
+    }
+
+    // Central window state management - initialized from config
+    let windowStates = $state<Record<string, WindowState>>(initializeWindowStates());
 
     // Mount handler to open portfolio after everything is ready
     onMount(() => {
         // Use a small delay to ensure all components are fully rendered
         setTimeout(() => {
-            isMounted = true;
             openWindow('portfolio');
         }, 50); // 50ms delay should be enough for rendering to complete
     });
@@ -140,65 +171,46 @@
         }
     }
 
-    // Button click handlers
-    function handleDebugPanelButton() {
-        const state = windowStates['portfolio'];
+    // Generic window handler
+    function handleWindowButton(id: string) {
+        const state = windowStates[id];
         if (!state.isOpen) {
-            openWindow('portfolio');
+            openWindow(id);
         } else if (state.isMinimized) {
-            toggleWindowMinimized('portfolio');
+            toggleWindowMinimized(id);
         } else {
-            bringToFront('portfolio');
-        }
-    }
-
-    function handleToolsButton() {
-        const state = windowStates['tools-window'];
-        if (!state.isOpen) {
-            openWindow('tools-window');
-        } else if (state.isMinimized) {
-            toggleWindowMinimized('tools-window');
-        } else {
-            bringToFront('tools-window');
+            bringToFront(id);
         }
     }
 
     // Clippy chat handler
     function handleClippyChatRequest() {
-        const state = windowStates['clippy-chat'];
-        if (!state.isOpen) {
-            openWindow('clippy-chat');
-        } else if (state.isMinimized) {
-            toggleWindowMinimized('clippy-chat');
-        } else {
-            bringToFront('clippy-chat');
-        }
+        handleWindowButton('clippy-chat');
     }
+
+    // Get list of window IDs to render (excluding clippy-chat as it's special)
+    let renderableWindows = $derived(
+        Object.keys(windowStates).filter(id => id !== 'clippy-chat')
+    );
 </script>
 
-<Scanlines 
-  scanWidth={2} 
+<Scanlines
+  scanWidth={2}
   scanlineSpeed={30}
 />
 <div class="desktop">
-	<!-- Desktop Shortcuts -->
-	<DesktopShortcut
-		showButtonPosition="top-left"
-		showButtonText="Portfolio"
-		buttonIndex={0}
-		isVisible={!windowStates['portfolio'].isOpen}
-		imageUrl={windowStates['portfolio'].iconUrl}
-		onclick={handleDebugPanelButton}
-	/>
-
-	<!-- <DesktopShortcut
-		showButtonPosition="top-left"
-		showButtonText="Home"
-		buttonIndex={1}
-		isVisible={!windowStates['tools-window'].isOpen}
-		imageUrl={windowStates['tools-window'].iconUrl}
-		onclick={handleToolsButton}
-	/> -->
+	<!-- Desktop Shortcuts - Generated from window config -->
+	{#each renderableWindows as id, index}
+		{@const state = windowStates[id]}
+		<DesktopShortcut
+			showButtonPosition={state.position || 'top-left'}
+			showButtonText={state.title}
+			buttonIndex={index}
+			isVisible={!state.isOpen}
+			imageUrl={state.iconUrl}
+			onclick={() => handleWindowButton(id)}
+		/>
+	{/each}
 
 	<!-- window management -->
 	<div class="main-screen">
@@ -206,29 +218,23 @@
 		<div class="desktop-content"></div>
 	</div>
 
-	<!-- Window Managers -->
-	<WindowManager
-		windowState={windowStates['portfolio']}
-		onClose={() => closeWindow('portfolio')}
-		toggleMinimize={() => toggleWindowMinimized('portfolio')}
-		onPositionChange={(x, y) => updateWindowPosition('portfolio', x, y)}
-		onSizeChange={(w, h) => updateWindowSize('portfolio', w, h)}
-		onBringToFront={() => bringToFront('portfolio')}
-	>
-		<PortfolioPage />
-	</WindowManager>
+	<!-- Window Managers - Generated from window config -->
+	{#each renderableWindows as id}
+		{@const state = windowStates[id]}
+		{@const config = windowConfigs[id]}
+		<WindowManager
+			windowState={state}
+			onClose={() => closeWindow(id)}
+			toggleMinimize={() => toggleWindowMinimized(id)}
+			onPositionChange={(x, y) => updateWindowPosition(id, x, y)}
+			onSizeChange={(w, h) => updateWindowSize(id, w, h)}
+			onBringToFront={() => bringToFront(id)}
+		>
+			<svelte:component this={config.component} />
+		</WindowManager>
+	{/each}
 
-	<!-- <WindowManager
-		windowState={windowStates['tools-window']}
-		onClose={() => closeWindow('tools-window')}
-		toggleMinimize={() => toggleWindowMinimized('tools-window')}
-		onPositionChange={(x, y) => updateWindowPosition('tools-window', x, y)}
-		onSizeChange={(w, h) => updateWindowSize('tools-window', w, h)}
-		onBringToFront={() => bringToFront('tools-window')}
-	>
-		<PortfolioPage />
-	</WindowManager> -->
-
+	<!-- Clippy-specific window -->
 	<WindowManager
 		windowState={windowStates['clippy-chat']}
 		onClose={() => closeWindow('clippy-chat')}
@@ -277,10 +283,5 @@
 	.toolbar {
 		position: relative;
 		z-index: 1000000;
-	}
-
-	.minimized {
-		pointer-events: none;
-		opacity: 0;
 	}
 </style>
