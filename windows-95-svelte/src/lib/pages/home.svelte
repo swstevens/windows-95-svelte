@@ -62,7 +62,7 @@
 
 	h1 {
 		margin: 0;
-		color: #000;
+		color: #4C545C;
 		font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
 		letter-spacing: 1px;
 		font-size: 56px;

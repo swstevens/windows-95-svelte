@@ -1,4 +1,6 @@
 <script lang="ts">
+	import '../styles/theme.css';
+
 	// Props interface
 	interface Props {
 		// Add any props you might need
@@ -7,8 +9,8 @@
 	let {}: Props = $props();
 </script>
 
-<div class="page about-page">
-	<div class="page-content">
+<div class="themed-page about-page">
+	<div class="themed-page-content">
 		<h2>WELCOME</h2>
 		<h3>I'm Shea Stevens</h3>
 		
@@ -25,14 +27,12 @@
 					sstevensw@gmail.com
 				</a>
 			</p>
-			
-			<div class="resume-container">
-				<div class="resume-container-text">
-					<h3>Looking for my resume?</h3>
-					<a rel="noreferrer" target="_blank" href="/Shea_Stevens_Res.pdf" download>
-						<p>Click here to download it!</p>
-					</a>
-				</div>
+
+			<div class="themed-section resume-section">
+				<h4>Looking for my resume?</h4>
+				<a rel="noreferrer" target="_blank" href="/Shea_Stevens_Res.pdf" download>
+					Click here to download it!
+				</a>
 			</div>
 		</div>
 		
@@ -47,20 +47,18 @@
 			<p>
 				My passion for programming also comes from the love of video games, which have shaped a lot of who I am today. When I would pick up my controller and be amazed by what could be created through code, I knew deep down that this was my path in life. That early era of janky, low poly models is something that I hold dear to my heart, and something that I replicate in my own personal projects. It helps that you don't need a super large team like newer releases, either.
 			</p>
-			
-			<div class="hobbies-section">
-				<div class="hobbies-text">
-					<h3>My Hobbies</h3>
-					<p>
-						Outside of programming, I've got quite a few hobbies. Film photography is one. Nothing beats the physical mediums in my opinion, and the imperfections that come with film. You can check out some of my photographs here:
-					</p>
-					<p>
-						My personal projects tend to include some form of retro game. Recently, I've really liked the Godot Engine, due to it's open source and free nature. After the debacle with Unity licensing, I've seen a lot of indie devs move there as well. Probably the most interesting thing about it is the language it uses, aptly named Godot, which is it's own fork of C#. Perfect for those smaller teams looking to build a retro labor of love.
-					</p>
-					<p>
-						And believe it or not, I'm quite a cook. While recipes can be quite formulaic, I try to keep my instincts in mind in the kitchen. Learn enough about the ingredients you cook with and you can come up with something pretty unique based on what's in your fridge. 
-					</p>
-				</div>
+
+			<div class="themed-section">
+				<div class="themed-section-title">My Hobbies</div>
+				<p>
+					Outside of programming, I've got quite a few hobbies. Film photography is one. Nothing beats the physical mediums in my opinion, and the imperfections that come with film. You can check out some of my photographs here:
+				</p>
+				<p>
+					My personal projects tend to include some form of retro game. Recently, I've really liked the Godot Engine, due to it's open source and free nature. After the debacle with Unity licensing, I've seen a lot of indie devs move there as well. Probably the most interesting thing about it is the language it uses, aptly named Godot, which is it's own fork of C#. Perfect for those smaller teams looking to build a retro labor of love.
+				</p>
+				<p>
+					And believe it or not, I'm quite a cook. While recipes can be quite formulaic, I try to keep my instincts in mind in the kitchen. Learn enough about the ingredients you cook with and you can come up with something pretty unique based on what's in your fridge.
+				</p>
 			</div>
 			
 			<p>
@@ -75,113 +73,43 @@
 </div>
 
 <style>
-	.page {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		padding: 8px;
-	}
-
-	.page-content {
-		flex: 1;
-		overflow-y: auto;
-		padding: 12px;
-		max-width: 900px;
-		margin: 0 auto;
-		width: 100%;
-	}
-
-	h2 {
-		margin: 0 0 12px 0;
-		color: #000;
-		font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-		letter-spacing: 1px;
-		font-size: 16px;
-		font-weight: bold;
-	}
-
-	h3 {
-		margin: 12px 0 8px 0;
-		color: #000;
-		font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-		letter-spacing: 1px;
-		font-size: 13px;
-		font-weight: bold;
-	}
-
-	p {
-		font-family: "Open Sans", sans-serif;
-		font-weight: 500;
-		margin: 0 0 6px 0;
-		font-size: 11px;
-		line-height: 1.5;
-	}
-
+	/* Page-specific customizations */
 	.text-block {
-		margin-bottom: 12px;
+		margin-bottom: 16px;
 	}
 
-	.resume-container {
-		display: flex;
-		align-items: center;
-		padding: 8px;
-		border: 2px solid #d0d0d0;
-		border-left: 0;
-		border-right: 0;
-		margin: 8px 0;
-		background: #f5f5f5;
+	.resume-section {
+		text-align: center;
+		margin: 16px 0;
 	}
 
-	.resume-container-text h3 {
-		margin: 0 0 4px 0;
+	.resume-section h4 {
+		margin: 0 0 12px 0;
 	}
 
-	.resume-container-text p {
-		margin: 0;
+	.resume-section a {
+		display: inline-block;
+		padding: 10px 24px;
+		background: var(--accent);
+		border: 2px solid var(--accent);
+		color: var(--bg);
+		text-decoration: none;
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 11px;
+		letter-spacing: 0.5px;
+		transition: all 0.2s ease;
 	}
 
-	.hobbies-section {
-		margin: 12px 0;
-		padding: 8px;
-		background: #fafafa;
-		border-left: 3px solid #d0d0d0;
+	.resume-section a:hover {
+		background: var(--bg);
+		color: var(--accent);
+		border-color: var(--accent);
 	}
 
-	.hobbies-text {
-		text-align: left;
-	}
-
-	a {
-		color: #0000ff;
-		text-decoration: underline;
-	}
-
-	a:hover {
-		color: #ff0000;
-	}
-
-	@media (max-width: 600px) {
-		.page-content {
-			padding: 8px;
-		}
-
-		h2 {
-			font-size: 14px;
-			margin: 0 0 10px 0;
-		}
-
-		h3 {
-			font-size: 12px;
-			margin: 10px 0 6px 0;
-		}
-
-		p {
-			font-size: 10px;
-			line-height: 1.4;
-		}
-
-		.text-block {
-			margin-bottom: 10px;
-		}
+	.resume-section a:active {
+		background: var(--secondary);
+		border-color: var(--secondary);
+		color: var(--bg);
 	}
 </style>

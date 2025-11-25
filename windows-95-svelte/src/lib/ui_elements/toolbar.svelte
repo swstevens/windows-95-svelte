@@ -72,10 +72,10 @@
 		display: flex;
 		width: 100%;
 		height: 26px;
-		background-color: #c0c0c0;
-		border-top: 1px solid #ffffff;
+		background-color: #FAF4E6;
+		border-top: 1px solid #e8dcc8;
 		align-items: center;
-		font-family: 'MS Sans Serif', sans-serif;
+		font-family: 'Space Mono', monospace;
 		font-size: 11px;
 	}
 
@@ -84,24 +84,25 @@
 		align-items: center;
 		height: 24px;
 		min-width: 64px;
-		border: 1px outset #c0c0c0;
-		background-color: #c0c0c0;
+		border: 1px outset #FAF4E6;
+		background-color: #FAF4E6;
+		color: #4C545C;
 		cursor: pointer;
 	}
 
 	.start-button:hover {
-		background-color: #d4d0c8;
+		background-color: #e8dcc8;
 	}
 
 	.start-button:active {
-		border: 1px inset #c0c0c0;
+		border: 1px inset #FAF4E6;
 	}
 
 	.separator {
 		width: 2px;
 		height: 20px;
-		border-left: 1px solid #808080;
-		border-right: 1px solid #ffffff;
+		border-left: 1px solid #FF8C00;
+		border-right: 1px solid #e8dcc8;
 		margin: 0 4px;
 	}
 
@@ -120,35 +121,36 @@
 		height: 22px;
 		min-width: 120px;
 		max-width: 160px;
-		border: 1px outset #c0c0c0;
-		background-color: #c0c0c0;
+		border: 1px outset #FAF4E6;
+		background-color: #FAF4E6;
+		color: #4C545C;
 		cursor: pointer;
-		font-family: 'MS Sans Serif', sans-serif;
+		font-family: 'Space Mono', monospace;
 		font-size: 11px;
 		padding: 0 8px;
 		overflow: hidden;
 	}
 
 	.window-button:hover {
-		background-color: #d4d0c8;
+		background-color: #e8dcc8;
 	}
 
 	.window-button:active {
-		border: 1px inset #c0c0c0;
+		border: 1px inset #FAF4E6;
 	}
 
 	.window-button.active {
-		border: 1px inset #c0c0c0;
-		background-color: #a0a0a0;
+		border: 1px inset #FAF4E6;
+		background-color: #d4c8a8;
 	}
 
 	.window-button.minimized {
-		background-color: #e0e0e0;
-		border: 1px outset #c0c0c0;
+		background-color: #e8dcc8;
+		border: 1px outset #FAF4E6;
 	}
 
 	.window-button.minimized:hover {
-		background-color: #d4d0c8;
+		background-color: #e8dcc8;
 	}
 
 	.clock {
@@ -157,8 +159,9 @@
 		justify-content: center;
 		height: 24px;
 		min-width: 60px;
-		border: 1px inset #c0c0c0;
-		background-color: #c0c0c0;
+		border: 1px inset #FAF4E6;
+		background-color: #FAF4E6;
+		color: #4C545C;
 		padding: 0 4px;
 	}
 

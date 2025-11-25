@@ -27,7 +27,7 @@
 
 <style>
 	.header {
-		border-bottom: 2px solid var(--primary);
+		border-bottom: 3px solid var(--accent);
 		padding-bottom: 16px;
 		margin-bottom: 24px;
 	}
@@ -36,33 +36,36 @@
 		all: unset;
 		display: inline-block;
 		margin-bottom: 12px;
-		padding: 6px 12px;
+		padding: 8px 16px;
 		background: var(--accent);
 		color: var(--bg);
-		font-family: 'Orbitron', sans-serif;
-		font-size: 10px;
+		font-family: 'Space Mono', monospace;
+		font-size: 11px;
 		font-weight: 700;
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		border-radius: 2px;
+		border: 2px solid var(--accent);
 	}
 
 	.back-button:hover {
-		background: var(--primary);
-		color: var(--bg);
+		background: var(--bg);
+		color: var(--accent);
+		border-color: var(--accent);
 	}
 
 	.back-button:active {
-		opacity: 0.8;
+		background: var(--primary);
+		color: var(--bg);
+		border-color: var(--primary);
 	}
 
 	.title {
-		font-family: 'Orbitron', sans-serif;
+		font-family: 'Space Mono', monospace;
 		font-size: 24px;
 		font-weight: 700;
 		margin: 0 0 12px 0;
-		letter-spacing: 2px;
+		letter-spacing: 1px;
 		color: var(--primary);
 	}
 
@@ -74,7 +77,8 @@
 	}
 
 	.date {
-		color: var(--muted);
-		letter-spacing: 1px;
+		color: var(--secondary);
+		letter-spacing: 0.5px;
+		font-weight: 600;
 	}
 </style>

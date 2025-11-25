@@ -12,10 +12,10 @@
 
 <style>
 	.page {
-		--bg: #E4D5C0;
-		--accent: #1d6345;
-		--primary: #c2754f;
-		--muted: #1d6345;
+		--bg: #FAF4E6;
+		--accent: #FF8C00;
+		--primary: #4C545C;
+		--secondary: #438848;
 
 		display: flex;
 		flex-direction: column;

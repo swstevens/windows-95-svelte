@@ -114,106 +114,110 @@
 	.page-content {
 		flex: 1;
 		overflow-y: auto;
-		padding: 12px;
+		padding: 16px;
 	}
 
 	.site-header {
 		text-align: center;
-		border-bottom: 2px solid var(--primary);
+		border-bottom: 3px solid var(--accent);
 		padding-bottom: 16px;
-		margin-bottom: 16px;
+		margin-bottom: 20px;
 	}
 
 	.construction {
 		background: var(--accent);
 		color: var(--bg);
-		padding: 4px 16px;
-		font-family: 'Orbitron', sans-serif;
+		padding: 6px 20px;
+		font-family: 'Space Mono', monospace;
 		font-weight: 700;
-		font-size: 9px;
+		font-size: 10px;
 		letter-spacing: 2px;
 		display: inline-block;
 		margin-bottom: 12px;
+		border: 2px solid var(--accent);
 	}
 
 	.site-title {
-		font-family: 'Orbitron', sans-serif;
-		font-size: 22px;
+		font-family: 'Space Mono', monospace;
+		font-size: 28px;
 		font-weight: 700;
-		margin: 8px 0;
-		letter-spacing: 4px;
+		margin: 12px 0;
+		letter-spacing: 2px;
 		color: var(--primary);
 	}
 
 	.tagline {
-		font-size: 10px;
-		color: var(--muted);
-		letter-spacing: 1px;
+		font-size: 11px;
+		color: var(--secondary);
+		letter-spacing: 0.5px;
 		margin-top: 8px;
+		font-weight: 600;
 	}
 
 	.visitor-counter {
-		margin-top: 12px;
-		font-size: 10px;
+		margin-top: 14px;
+		font-size: 11px;
 		color: var(--primary);
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
 	}
 
 	.counter {
 		background: var(--primary);
-		color: var(--accent);
-		padding: 3px 8px;
+		color: var(--bg);
+		padding: 4px 10px;
 		font-family: 'Space Mono', monospace;
 		font-weight: 700;
+		border: 2px solid var(--primary);
 	}
 
 	.section {
-		background: var(--primary);
-		border: none;
-		padding: 12px;
-		margin-bottom: 16px;
+		background: transparent;
+		border: 2px solid var(--secondary);
+		padding: 16px;
+		margin-bottom: 20px;
 	}
 
 	.section-title {
-		font-family: 'Orbitron', sans-serif;
-		color: var(--accent);
-		font-size: 11px;
+		font-family: 'Space Mono', monospace;
+		color: var(--primary);
+		font-size: 12px;
 		font-weight: 700;
-		letter-spacing: 2px;
+		letter-spacing: 1px;
 		text-transform: uppercase;
-		border-bottom: 1px solid var(--muted);
+		border-bottom: 2px solid var(--accent);
 		padding-bottom: 8px;
-		margin-bottom: 12px;
+		margin-bottom: 14px;
 	}
 
 	.post-card {
 		all: unset;
 		display: block;
 		background: transparent;
-		border-left: 3px solid var(--accent);
-		padding: 8px 12px;
-		margin-bottom: 12px;
+		border-left: 4px solid var(--secondary);
+		padding: 10px 14px;
+		margin-bottom: 14px;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		text-align: left;
 	}
 
 	.post-card:hover {
-		background: rgba(29, 99, 69, 0.1);
-		border-left-width: 5px;
-		padding-left: 10px;
+		background: rgba(255, 140, 0, 0.1);
+		border-left-color: var(--accent);
+		border-left-width: 6px;
+		padding-left: 12px;
 	}
 
 	.post-card:active {
-		background: rgba(29, 99, 69, 0.2);
+		background: rgba(67, 136, 72, 0.15);
 	}
 
 	.post-title {
-		font-family: 'Orbitron', sans-serif;
-		color: var(--bg);
-		font-size: 11px;
+		font-family: 'Space Mono', monospace;
+		color: var(--primary);
+		font-size: 13px;
 		font-weight: 700;
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
 	}
 
 	.post-card:hover .post-title {
@@ -221,70 +225,85 @@
 	}
 
 	.post-date {
-		color: var(--muted);
-		font-size: 9px;
+		color: var(--secondary);
+		font-size: 10px;
 		margin: 6px 0;
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
+		font-weight: 600;
 	}
 
 	.post-excerpt {
-		color: var(--bg);
-		font-size: 10px;
+		color: var(--primary);
+		font-size: 11px;
 		line-height: 1.6;
 		margin: 0;
 	}
 
 	.guestbook-form {
 		display: flex;
-		gap: 6px;
-		margin-bottom: 12px;
+		gap: 8px;
+		margin-bottom: 14px;
 		flex-wrap: wrap;
 	}
 
 	.guest-input {
 		flex: 1;
-		min-width: 100px;
-		padding: 6px 8px;
+		min-width: 120px;
+		padding: 8px 10px;
 		background: var(--bg);
-		border: 1px solid var(--muted);
+		border: 2px solid var(--secondary);
 		color: var(--primary);
 		font-family: 'Space Mono', monospace;
-		font-size: 10px;
+		font-size: 11px;
+	}
+
+	.guest-input:focus {
+		outline: none;
+		border-color: var(--accent);
 	}
 
 	.guest-input::placeholder {
-		color: var(--muted);
+		color: var(--secondary);
+		opacity: 0.6;
 	}
 
 	.sign-btn {
-		padding: 6px 16px;
+		padding: 8px 20px;
 		background: var(--accent);
-		border: none;
+		border: 2px solid var(--accent);
 		color: var(--bg);
 		cursor: pointer;
-		font-family: 'Orbitron', sans-serif;
-		font-size: 9px;
+		font-family: 'Space Mono', monospace;
+		font-size: 10px;
 		font-weight: 700;
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
 		text-transform: uppercase;
+		transition: all 0.2s ease;
 	}
 
 	.sign-btn:hover {
-		background: var(--muted);
+		background: var(--bg);
+		color: var(--accent);
+	}
+
+	.sign-btn:active {
+		background: var(--secondary);
+		border-color: var(--secondary);
+		color: var(--bg);
 	}
 
 	.guestbook-entries {
-		max-height: 100px;
+		max-height: 120px;
 		overflow-y: auto;
 	}
 
 	.guest-entry {
-		font-size: 10px;
-		padding: 6px 0;
-		border-bottom: 1px solid var(--muted);
-		color: var(--bg);
+		font-size: 11px;
+		padding: 8px 0;
+		border-bottom: 1px solid var(--secondary);
+		color: var(--primary);
 		display: flex;
-		gap: 8px;
+		gap: 10px;
 		align-items: baseline;
 	}
 
@@ -294,19 +313,20 @@
 	}
 
 	.guest-date {
-		color: var(--muted);
-		font-size: 9px;
+		color: var(--secondary);
+		font-size: 10px;
+		font-weight: 600;
 	}
 
 	.guest-msg {
-		color: var(--bg);
+		color: var(--primary);
 	}
 
 	.footer {
 		text-align: center;
-		border-top: 2px solid var(--primary);
-		padding-top: 12px;
-		margin-top: 12px;
+		border-top: 3px solid var(--accent);
+		padding-top: 14px;
+		margin-top: 20px;
 	}
 
 	.badges {
@@ -314,21 +334,23 @@
 		justify-content: center;
 		gap: 12px;
 		flex-wrap: wrap;
-		margin-bottom: 8px;
+		margin-bottom: 10px;
 	}
 
 	.badge {
-		background: var(--primary);
-		padding: 4px 12px;
-		font-size: 9px;
+		background: var(--secondary);
+		padding: 6px 14px;
+		font-size: 10px;
 		color: var(--bg);
-		letter-spacing: 1px;
+		letter-spacing: 0.5px;
+		border: 2px solid var(--secondary);
+		font-weight: 600;
 	}
 
 	.webring {
-		font-size: 10px;
-		color: var(--muted);
-		letter-spacing: 1px;
+		font-size: 11px;
+		color: var(--secondary);
+		letter-spacing: 0.5px;
 	}
 
 	.ring-name {

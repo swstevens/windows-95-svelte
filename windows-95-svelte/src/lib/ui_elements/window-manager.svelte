@@ -145,13 +145,18 @@
 		}
 	}
 
+	let windowElement: HTMLDivElement | undefined = $state();
+
 	function handleWindowClick() {
 		onBringToFront?.();
+		// Focus the window to ensure keyboard events work
+		windowElement?.focus();
 	}
 
 	function handleKeyDown(event: KeyboardEvent) {
 		// Escape key closes the dialog (standard behavior)
 		if (event.key === 'Escape') {
+			event.preventDefault();
 			handleClose();
 		}
 		// Allow other key events to bubble
@@ -162,6 +167,7 @@
 
 {#if windowState.isOpen && !windowState.isMinimized}
 	<div
+		bind:this={windowElement}
 		class="window"
 		class:mobile-fullscreen={isMobile && isMaximized}
 		style="left: {windowState.x}px; top: {windowState.y}px; width: {windowState.width}px; height: {windowState.height}px; z-index: {windowState.zIndex};"
@@ -219,15 +225,15 @@
 <style>
 	.window {
 		position: absolute;
-		background: #c0c0c0;
-		border: 2px outset #c0c0c0;
+		background: #FAF4E6;
+		border: 2px outset #FAF4E6;
 		border-radius: 0;
 		box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 		overflow: hidden;
 		user-select: none;
 		min-width: 200px;
 		min-height: 150px;
-		font-family: 'MS Sans Serif', sans-serif;
+		font-family: 'Space Mono', monospace;
 		font-size: 11px;
 	}
 
@@ -238,15 +244,15 @@
 	}
 
 	.title-bar {
-		background: linear-gradient(90deg, #0000ff 0%, #000080 100%);
-		color: white;
+		background: linear-gradient(90deg, #FF8C00 0%, #e67e00 100%);
+		color: #FAF4E6;
 		padding: 2px 4px;
 		cursor: grab;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		height: 18px;
-		border-bottom: 1px solid #808080;
+		border-bottom: 1px solid #438848;
 	}
 
 	.title-bar:active {
@@ -256,7 +262,7 @@
 	.title {
 		font-weight: bold;
 		font-size: 11px;
-		font-family: 'MS Sans Serif', sans-serif;
+		font-family: 'Space Mono', monospace;
 		padding-left: 4px;
 	}
 
@@ -266,9 +272,9 @@
 	}
 
 	.title-button {
-		background: #c0c0c0;
-		border: 1px outset #c0c0c0;
-		color: black;
+		background: #FAF4E6;
+		border: 1px outset #FAF4E6;
+		color: #4C545C;
 		width: 16px;
 		height: 14px;
 		border-radius: 0;
@@ -278,17 +284,17 @@
 		justify-content: center;
 		font-size: 10px;
 		font-weight: bold;
-		font-family: 'MS Sans Serif', sans-serif;
+		font-family: 'Space Mono', monospace;
 		line-height: 1;
 	}
 
 	.title-button:hover {
-		background: #d4d0c8;
+		background: #e8dcc8;
 	}
 
 	.title-button:active {
-		border: 1px inset #c0c0c0;
-		background: #a0a0a0;
+		border: 1px inset #FAF4E6;
+		background: #d4c8a8;
 	}
 
 	.minimize-button {
@@ -303,13 +309,13 @@
 
 	.content {
 		padding: 8px;
-		font-family: 'MS Sans Serif', sans-serif;
+		font-family: 'Space Mono', monospace;
 		font-size: 11px;
 		line-height: 1.3;
 		height: calc(100% - 22px); /* Subtract title bar height */
 		overflow: auto;
-		background: #c0c0c0;
-		border: 1px inset #c0c0c0;
+		background: #FAF4E6;
+		border: 1px inset #FAF4E6;
 		margin: 2px;
 	}
 
@@ -325,15 +331,15 @@
 		height: 12px;
 		cursor: nw-resize;
 		background:
-			linear-gradient(45deg, transparent 30%, #808080 30%, #808080 40%, transparent 40%),
-			linear-gradient(45deg, transparent 60%, #808080 60%, #808080 70%, transparent 70%);
+			linear-gradient(45deg, transparent 30%, #FF8C00 30%, #FF8C00 40%, transparent 40%),
+			linear-gradient(45deg, transparent 60%, #FF8C00 60%, #FF8C00 70%, transparent 70%);
 		background-size: 4px 4px;
 	}
 
 	.resize-handle:hover {
 		background:
-			linear-gradient(45deg, transparent 30%, #606060 30%, #606060 40%, transparent 40%),
-			linear-gradient(45deg, transparent 60%, #606060 60%, #606060 70%, transparent 70%);
+			linear-gradient(45deg, transparent 30%, #438848 30%, #438848 40%, transparent 40%),
+			linear-gradient(45deg, transparent 60%, #438848 60%, #438848 70%, transparent 70%);
 		background-size: 4px 4px;
 	}
 </style>

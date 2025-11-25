@@ -1,16 +1,18 @@
 <script lang="ts">
+    import '../styles/theme.css';
+
     // Props interface
     interface Props {
       // Add any props you might need
     }
     let {}: Props = $props();
   </script>
-  
-  <div class="page experience-page">
-    <div class="page-content">
+
+  <div class="themed-page experience-page">
+    <div class="themed-page-content">
       <h2>Experience</h2>
-      
-      <div class="experience-item">
+
+      <div class="themed-card experience-item">
         <h3>VINDICIA</h3>
         <p class="date">San Francisco, 03/22-12/23</p>
         <p>
@@ -24,7 +26,7 @@
         </p>
       </div>
   
-      <div class="experience-item">
+      <div class="themed-card experience-item">
         <h3>UO TECHDESK</h3>
         <p class="date">Eugene, 09/19-08/21</p>
         <p>
@@ -33,7 +35,7 @@
         </p>
       </div>
   
-      <div class="experience-item">
+      <div class="themed-card experience-item">
         <h3>UO ESPORTS</h3>
         <p class="date">Eugene, 09/19-06/21</p>
         <p>
@@ -44,88 +46,21 @@
   </div>
   
   <style>
-    .page {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 8px;
-    }
-
-    .page-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      max-width: 900px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    h2 {
-      margin: 0 0 12px 0;
-      color: #000;
-      font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-      letter-spacing: 1px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    h3 {
-      margin: 10px 0 6px 0;
-      color: #000;
-      font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-      letter-spacing: 1px;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    p {
-      font-family: "Open Sans", sans-serif;
-      font-weight: 500;
-      margin: 0 0 6px 0;
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
+    /* Page-specific customizations */
     .experience-item {
-      margin-bottom: 12px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #d0d0d0;
+      cursor: default;
     }
 
-    .experience-item:last-child {
-      border-bottom: none;
+    .experience-item:hover {
+      cursor: default;
+      padding-left: 14px;
     }
 
     .date {
       font-style: italic;
-      color: #606060;
+      color: var(--secondary);
       font-size: 10px;
-      margin-bottom: 6px;
-    }
-
-    @media (max-width: 600px) {
-      .page-content {
-        padding: 8px;
-      }
-
-      h2 {
-        font-size: 14px;
-        margin: 0 0 10px 0;
-      }
-
-      h3 {
-        font-size: 12px;
-        margin: 8px 0 4px 0;
-      }
-
-      p {
-        font-size: 10px;
-        line-height: 1.4;
-      }
-
-      .experience-item {
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-      }
+      margin-bottom: 8px;
+      font-weight: 600;
     }
   </style>

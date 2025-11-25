@@ -332,7 +332,7 @@
 
 <style>
 	.desktop {
-		background-color: #018281;
+		background-color: #438848;
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
