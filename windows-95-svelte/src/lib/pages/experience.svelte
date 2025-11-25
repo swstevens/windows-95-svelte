@@ -50,51 +50,82 @@
       height: 100%;
       padding: 8px;
     }
-  
+
     .page-content {
       flex: 1;
       overflow-y: auto;
-      padding: 8px;
+      padding: 12px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
     }
-  
+
     h2 {
-      margin: 0 0 16px 0;
+      margin: 0 0 12px 0;
       color: #000;
       font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-		letter-spacing: 1px;
-      font-size: 14px;
+      letter-spacing: 1px;
+      font-size: 16px;
       font-weight: bold;
     }
-  
+
     h3 {
-      margin: 0 0 8px 0;
+      margin: 10px 0 6px 0;
       color: #000;
       font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
-		letter-spacing: 1px;
-      font-size: 12px;
+      letter-spacing: 1px;
+      font-size: 13px;
       font-weight: bold;
     }
-  
+
     p {
       font-family: "Open Sans", sans-serif;
       font-weight: 500;
-      margin: 0 0 8px 0;
-      font-size: 12px;
-      line-height: 1.4;
+      margin: 0 0 6px 0;
+      font-size: 11px;
+      line-height: 1.5;
     }
-  
+
     .experience-item {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       padding-bottom: 12px;
       border-bottom: 2px solid #d0d0d0;
     }
-  
+
     .experience-item:last-child {
       border-bottom: none;
     }
-  
+
     .date {
       font-style: italic;
       color: #606060;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .page-content {
+        padding: 8px;
+      }
+
+      h2 {
+        font-size: 14px;
+        margin: 0 0 10px 0;
+      }
+
+      h3 {
+        font-size: 12px;
+        margin: 8px 0 4px 0;
+      }
+
+      p {
+        font-size: 10px;
+        line-height: 1.4;
+      }
+
+      .experience-item {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+      }
     }
   </style>

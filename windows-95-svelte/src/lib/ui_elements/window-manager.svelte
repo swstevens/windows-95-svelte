@@ -1,307 +1,339 @@
-	<script lang="ts">
-		import { onMount } from 'svelte';
-		import type { Component } from 'svelte';
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import type { Component } from 'svelte';
 
-		interface WindowState {
-			id: string;
-			title: string;
-			isOpen: boolean;
-			isMinimized: boolean;
-			x: number;
-			y: number;
-			width: number;
-			height: number;
-			zIndex: number;
-		}
+	interface WindowState {
+		id: string;
+		title: string;
+		isOpen: boolean;
+		isMinimized: boolean;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+		zIndex: number;
+	}
 
-		interface Props {
-			windowState: WindowState;
-			contentComponent?: Component;
-			contentProps?: Record<string, any>;
-			children?: any;
-			onClose?: () => void;
-			toggleMinimize?: () => void;
-			onPositionChange?: (x: number, y: number) => void;
-			onSizeChange?: (width: number, height: number) => void;
-			onBringToFront?: () => void;
-		}
+	interface Props {
+		windowState: WindowState;
+		contentComponent?: Component;
+		contentProps?: Record<string, any>;
+		children?: any;
+		onClose?: () => void;
+		toggleMinimize?: () => void;
+		onPositionChange?: (x: number, y: number) => void;
+		onSizeChange?: (width: number, height: number) => void;
+		onBringToFront?: () => void;
+		isMobile?: boolean;
+	}
 
-		let {
-			windowState,
-			contentComponent,
-			contentProps = {},
-			children,
-			onClose,
-			toggleMinimize,
-			onPositionChange,
-			onSizeChange,
-			onBringToFront
-		}: Props = $props();
+	let {
+		windowState,
+		contentComponent,
+		contentProps = {},
+		children,
+		onClose,
+		toggleMinimize,
+		onPositionChange,
+		onSizeChange,
+		onBringToFront,
+		isMobile = false
+	}: Props = $props();
 
-		// Local dragging and resizing state
-		let isDragging = $state(false);
-		let isResizing = $state(false);
-		let isMaximized = $state(false);
-		let dragOffset = $state({ x: 0, y: 0 });
-		let resizeOffset = $state({ x: 0, y: 0 });
-		let previousState = $state({ x: 0, y: 0, width: 0, height: 0 });
+	// Local dragging and resizing state
+	let isDragging = $state(false);
+	let isResizing = $state(false);
+	let isMaximized = $state(false);
+	let dragOffset = $state({ x: 0, y: 0 });
+	let resizeOffset = $state({ x: 0, y: 0 });
+	let previousState = $state({ x: 0, y: 0, width: 0, height: 0 });
 
-		// Initialize window size on mount
-		onMount(() => {
-			if (onSizeChange) {
-				const initialWidth = Math.floor(window.innerWidth - 2 * windowState.x);
-				const initialHeight = Math.floor(window.innerHeight - 2 * windowState.y);
-				onSizeChange(initialWidth, initialHeight);
-			}
-		});
-
-		function handleDragStart(event: MouseEvent) {
-			if (isMaximized) return;
-
-			isDragging = true;
-			const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-			dragOffset = {
-				x: event.clientX - rect.left,
-				y: event.clientY - rect.top
+	// Initialize window size on mount
+	onMount(() => {
+		if (isMobile) {
+			// On mobile, maximize immediately
+			previousState = {
+				x: windowState.x,
+				y: windowState.y,
+				width: windowState.width,
+				height: windowState.height
 			};
-
-			onBringToFront?.();
-			event.preventDefault();
+			onPositionChange?.(0, 0);
+			onSizeChange?.(window.innerWidth, window.innerHeight - 32);
+			isMaximized = true;
+		} else if (onSizeChange) {
+			const initialWidth = Math.floor(window.innerWidth - 2 * windowState.x);
+			const initialHeight = Math.floor(window.innerHeight - 2 * windowState.y);
+			onSizeChange(initialWidth, initialHeight);
 		}
+	});
 
-		function handleResizeStart(event: MouseEvent) {
-			if (isMaximized) return;
+	function handleDragStart(event: MouseEvent) {
+		if (isMaximized || isMobile) return;
 
-			isResizing = true;
-			resizeOffset = {
-				x: event.clientX - windowState.width,
-				y: event.clientY - windowState.height
+		isDragging = true;
+		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+		dragOffset = {
+			x: event.clientX - rect.left,
+			y: event.clientY - rect.top
+		};
+
+		onBringToFront?.();
+		event.preventDefault();
+	}
+
+	function handleResizeStart(event: MouseEvent) {
+		if (isMaximized || isMobile) return;
+
+		isResizing = true;
+		resizeOffset = {
+			x: event.clientX - windowState.width,
+			y: event.clientY - windowState.height
+		};
+		event.preventDefault();
+		event.stopPropagation();
+	}
+
+	function handleMouseMove(event: MouseEvent) {
+		if (isDragging && !isMaximized) {
+			const newX = Math.max(0, Math.min(window.innerWidth - windowState.width, event.clientX - dragOffset.x));
+			const newY = Math.max(0, Math.min(window.innerHeight - windowState.height-32, event.clientY - dragOffset.y));
+			onPositionChange?.(newX, newY);
+		} else if (isResizing && !isMaximized) {
+			const newWidth = Math.max(200, event.clientX - resizeOffset.x);
+			const newHeight = Math.max(150, event.clientY - resizeOffset.y);
+
+			// Prevent window from going off screen
+			const constrainedWidth = Math.min(newWidth, window.innerWidth - windowState.x);
+			const constrainedHeight = Math.min(newHeight, window.innerHeight - windowState.y);
+
+			onSizeChange?.(constrainedWidth, constrainedHeight);
+		}
+	}
+
+	function handleMouseUp() {
+		isDragging = false;
+		isResizing = false;
+	}
+
+	function handleClose() {
+		onClose?.();
+	}
+
+	function handleMinimize() {
+		toggleMinimize?.();
+	}
+
+	function handleMaximize() {
+		if (isMaximized) {
+			// Restore to previous size and position
+			onPositionChange?.(previousState.x, previousState.y);
+			onSizeChange?.(previousState.width, previousState.height);
+			isMaximized = false;
+		} else {
+			// Store current state before maximizing
+			previousState = {
+				x: windowState.x,
+				y: windowState.y,
+				width: windowState.width,
+				height: windowState.height
 			};
-			event.preventDefault();
-			event.stopPropagation();
+			// Maximize to full viewport (account for toolbar)
+			onPositionChange?.(0, 0);
+			onSizeChange?.(window.innerWidth, window.innerHeight - 32);
+			isMaximized = true;
 		}
+	}
 
-		function handleMouseMove(event: MouseEvent) {
-			if (isDragging && !isMaximized) {
-				const newX = Math.max(0, Math.min(window.innerWidth - windowState.width, event.clientX - dragOffset.x));
-				const newY = Math.max(0, Math.min(window.innerHeight - windowState.height-32, event.clientY - dragOffset.y));
-				onPositionChange?.(newX, newY);
-			} else if (isResizing && !isMaximized) {
-				const newWidth = Math.max(200, event.clientX - resizeOffset.x);
-				const newHeight = Math.max(150, event.clientY - resizeOffset.y);
+	function handleWindowClick() {
+		onBringToFront?.();
+	}
 
-				// Prevent window from going off screen
-				const constrainedWidth = Math.min(newWidth, window.innerWidth - windowState.x);
-				const constrainedHeight = Math.min(newHeight, window.innerHeight - windowState.y);
-				
-				onSizeChange?.(constrainedWidth, constrainedHeight);
-			}
+	function handleKeyDown(event: KeyboardEvent) {
+		// Escape key closes the dialog (standard behavior)
+		if (event.key === 'Escape') {
+			handleClose();
 		}
+		// Allow other key events to bubble
+	}
+</script>
 
-		function handleMouseUp() {
-			isDragging = false;
-			isResizing = false;
-		}
+<svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
-		function handleClose() {
-			onClose?.();
-		}
-
-		function handleMinimize() {
-			toggleMinimize?.();
-		}
-
-		function handleMaximize() {
-			if (isMaximized) {
-				// Restore to previous size and position
-				onPositionChange?.(previousState.x, previousState.y);
-				onSizeChange?.(previousState.width, previousState.height);
-				isMaximized = false;
-			} else {
-				// Store current state before maximizing
-				previousState = { 
-					x: windowState.x, 
-					y: windowState.y, 
-					width: windowState.width, 
-					height: windowState.height 
-				};
-				// Maximize to full viewport (account for toolbar)
-				onPositionChange?.(0, 0);
-				onSizeChange?.(window.innerWidth, window.innerHeight - 32);
-				isMaximized = true;
-			}
-		}
-
-		function handleWindowClick() {
-			onBringToFront?.();
-		}
-	</script>
-
-	<svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
-
-	{#if windowState.isOpen && !windowState.isMinimized}
-		<div
-			class="window"
-			style="left: {windowState.x}px; top: {windowState.y}px; width: {windowState.width}px; height: {windowState.height}px; z-index: {windowState.zIndex};"
-			onclick={handleWindowClick}
-		>
-			<!-- Title Bar -->
-			<div class="title-bar" onmousedown={handleDragStart} role="button" tabindex="0">
-				<span class="title">{windowState.title}</span>
-				<div class="title-buttons">
-					<button class="title-button minimize-button" onclick={handleMinimize} title="Minimize">
-						_
-					</button>
-					<button
-						class="title-button maximize-button"
-						onclick={handleMaximize}
-						title={isMaximized ? 'Restore' : 'Maximize'}
-					>
-						{#if isMaximized}
-							⧉
-						{:else}
-							□
-						{/if}
-					</button>
-					<button class="title-button close-button" onclick={handleClose} title="Close"> × </button>
-				</div>
-			</div>
-
-			<!-- Content Area -->
-			<div class="content">
-				{#if contentComponent}
-					{#if typeof contentComponent === 'function'}
-						{@const ComponentConstructor = contentComponent}
-						<ComponentConstructor {...contentProps}></ComponentConstructor>
+{#if windowState.isOpen && !windowState.isMinimized}
+	<div
+		class="window"
+		class:mobile-fullscreen={isMobile && isMaximized}
+		style="left: {windowState.x}px; top: {windowState.y}px; width: {windowState.width}px; height: {windowState.height}px; z-index: {windowState.zIndex};"
+		role="dialog"
+		aria-label={windowState.title}
+		tabindex="0"
+		onclick={handleWindowClick}
+		onkeydown={handleKeyDown}
+	>
+		<!-- Title Bar -->
+		<div class="title-bar" onmousedown={handleDragStart} role="button" tabindex="0">
+			<span class="title">{windowState.title}</span>
+			<div class="title-buttons">
+				<button class="title-button minimize-button" onclick={handleMinimize} title="Minimize">
+					_
+				</button>
+				<button
+					class="title-button maximize-button"
+					onclick={handleMaximize}
+					title={isMaximized ? 'Restore' : 'Maximize'}
+				>
+					{#if isMaximized}
+						⧉
 					{:else}
-						<contentComponent {...contentProps}></contentComponent>
+						□
 					{/if}
-				{:else if children}
-					{@render children()}
-				{:else}
-					<p>No content provided</p>
-				{/if}
+				</button>
+				<button class="title-button close-button" onclick={handleClose} title="Close"> × </button>
 			</div>
+		</div>
 
-			<!-- Resize Handle -->
-			{#if !isMaximized}
-				<div class="resize-handle" onmousedown={handleResizeStart} role="button" tabindex="0"></div>
+		<!-- Content Area -->
+		<div class="content">
+			{#if contentComponent}
+				{#if typeof contentComponent === 'function'}
+					{@const ComponentConstructor = contentComponent}
+					<ComponentConstructor {...contentProps}></ComponentConstructor>
+				{:else}
+					<contentComponent {...contentProps}></contentComponent>
+				{/if}
+			{:else if children}
+				{@render children()}
+			{:else}
+				<p>No content provided</p>
 			{/if}
 		</div>
-	{/if}
 
-	<style>
-		.window {
-			position: absolute;
-			background: #c0c0c0;
-			border: 2px outset #c0c0c0;
-			border-radius: 0;
-			box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-			overflow: hidden;
-			user-select: none;
-			min-width: 200px;
-			min-height: 150px;
-			font-family: 'MS Sans Serif', sans-serif;
-			font-size: 11px;
-		}
+		<!-- Resize Handle -->
+		{#if !isMaximized && !isMobile}
+			<div class="resize-handle" onmousedown={handleResizeStart} role="button" tabindex="0"></div>
+		{/if}
+	</div>
+{/if}
 
-		.title-bar {
-			background: linear-gradient(90deg, #0000ff 0%, #000080 100%);
-			color: white;
-			padding: 2px 4px;
-			cursor: grab;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			height: 18px;
-			border-bottom: 1px solid #808080;
-		}
+<style>
+	.window {
+		position: absolute;
+		background: #c0c0c0;
+		border: 2px outset #c0c0c0;
+		border-radius: 0;
+		box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+		overflow: hidden;
+		user-select: none;
+		min-width: 200px;
+		min-height: 150px;
+		font-family: 'MS Sans Serif', sans-serif;
+		font-size: 11px;
+	}
 
-		.title-bar:active {
-			cursor: grabbing;
-		}
+	.window.mobile-fullscreen {
+		border: none;
+		box-shadow: none;
+		border-radius: 0;
+	}
 
-		.title {
-			font-weight: bold;
-			font-size: 11px;
-			font-family: 'MS Sans Serif', sans-serif;
-			padding-left: 4px;
-		}
+	.title-bar {
+		background: linear-gradient(90deg, #0000ff 0%, #000080 100%);
+		color: white;
+		padding: 2px 4px;
+		cursor: grab;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 18px;
+		border-bottom: 1px solid #808080;
+	}
 
-		.title-buttons {
-			display: flex;
-			gap: 1px;
-		}
+	.title-bar:active {
+		cursor: grabbing;
+	}
 
-		.title-button {
-			background: #c0c0c0;
-			border: 1px outset #c0c0c0;
-			color: black;
-			width: 16px;
-			height: 14px;
-			border-radius: 0;
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 10px;
-			font-weight: bold;
-			font-family: 'MS Sans Serif', sans-serif;
-			line-height: 1;
-		}
+	.title {
+		font-weight: bold;
+		font-size: 11px;
+		font-family: 'MS Sans Serif', sans-serif;
+		padding-left: 4px;
+	}
 
-		.title-button:hover {
-			background: #d4d0c8;
-		}
+	.title-buttons {
+		display: flex;
+		gap: 1px;
+	}
 
-		.title-button:active {
-			border: 1px inset #c0c0c0;
-			background: #a0a0a0;
-		}
+	.title-button {
+		background: #c0c0c0;
+		border: 1px outset #c0c0c0;
+		color: black;
+		width: 16px;
+		height: 14px;
+		border-radius: 0;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 10px;
+		font-weight: bold;
+		font-family: 'MS Sans Serif', sans-serif;
+		line-height: 1;
+	}
 
-		.minimize-button {
-			font-size: 12px;
-			padding-top: 2px;
-			padding-bottom: 10px;
-		}
+	.title-button:hover {
+		background: #d4d0c8;
+	}
 
-		.maximize-button {
-			font-size: 9px;
-		}
+	.title-button:active {
+		border: 1px inset #c0c0c0;
+		background: #a0a0a0;
+	}
 
-		.content {
-			padding: 8px;
-			font-family: 'MS Sans Serif', sans-serif;
-			font-size: 11px;
-			line-height: 1.3;
-			height: calc(100% - 22px); /* Subtract title bar height */
-			overflow: auto;
-			background: #c0c0c0;
-			border: 1px i	nset #c0c0c0;
-			margin: 2px;
-		}
+	.minimize-button {
+		font-size: 12px;
+		padding-top: 2px;
+		padding-bottom: 10px;
+	}
 
-		.content p {
-			margin: 0 0 4px 0;
-		}
+	.maximize-button {
+		font-size: 9px;
+	}
 
-		.resize-handle {
-			position: absolute;
-			bottom: 2px;
-			right: 2px;
-			width: 12px;
-			height: 12px;
-			cursor: nw-resize;
-			background:
-				linear-gradient(45deg, transparent 30%, #808080 30%, #808080 40%, transparent 40%),
-				linear-gradient(45deg, transparent 60%, #808080 60%, #808080 70%, transparent 70%);
-			background-size: 4px 4px;
-		}
+	.content {
+		padding: 8px;
+		font-family: 'MS Sans Serif', sans-serif;
+		font-size: 11px;
+		line-height: 1.3;
+		height: calc(100% - 22px); /* Subtract title bar height */
+		overflow: auto;
+		background: #c0c0c0;
+		border: 1px inset #c0c0c0;
+		margin: 2px;
+	}
 
-		.resize-handle:hover {
-			background:
-				linear-gradient(45deg, transparent 30%, #606060 30%, #606060 40%, transparent 40%),
-				linear-gradient(45deg, transparent 60%, #606060 60%, #606060 70%, transparent 70%);
-			background-size: 4px 4px;
-		}
-	</style>
+	.content p {
+		margin: 0 0 4px 0;
+	}
+
+	.resize-handle {
+		position: absolute;
+		bottom: 2px;
+		right: 2px;
+		width: 12px;
+		height: 12px;
+		cursor: nw-resize;
+		background:
+			linear-gradient(45deg, transparent 30%, #808080 30%, #808080 40%, transparent 40%),
+			linear-gradient(45deg, transparent 60%, #808080 60%, #808080 70%, transparent 70%);
+		background-size: 4px 4px;
+	}
+
+	.resize-handle:hover {
+		background:
+			linear-gradient(45deg, transparent 30%, #606060 30%, #606060 40%, transparent 40%),
+			linear-gradient(45deg, transparent 60%, #606060 60%, #606060 70%, transparent 70%);
+		background-size: 4px 4px;
+	}
+</style>

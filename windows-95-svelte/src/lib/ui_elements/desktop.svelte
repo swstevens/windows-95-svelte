@@ -44,6 +44,17 @@
         position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
     }
 
+    // Mobile detection
+    let isMobile = $state(false);
+    let screenWidth = $state(typeof window !== 'undefined' ? window.innerWidth : 0);
+
+    function updateScreenSize() {
+        if (typeof window !== 'undefined') {
+            screenWidth = window.innerWidth;
+            isMobile = screenWidth < 768;
+        }
+    }
+
     // Z-index management
     let nextZIndex = $state(1000);
     let selectedBlogPost = $state<BlogPostType | null>(null);
@@ -146,10 +157,18 @@
 
     // Mount handler to open portfolio after everything is ready
     onMount(() => {
+        // Initialize mobile detection
+        updateScreenSize();
+        window.addEventListener('resize', updateScreenSize);
+
         // Use a small delay to ensure all components are fully rendered
         setTimeout(() => {
             openWindow('portfolio');
         }, 50); // 50ms delay should be enough for rendering to complete
+
+        return () => {
+            window.removeEventListener('resize', updateScreenSize);
+        };
     });
 
     // Computed property for open windows (for toolbar)
@@ -259,6 +278,7 @@
 		{@const config = windowConfigs[id]}
 		<WindowManager
 			windowState={state}
+			{isMobile}
 			onClose={() => closeWindow(id)}
 			toggleMinimize={() => toggleWindowMinimized(id)}
 			onPositionChange={(x, y) => updateWindowPosition(id, x, y)}
@@ -266,9 +286,9 @@
 			onBringToFront={() => bringToFront(id)}
 		>
 			{#if id === 'blog'}
-				<svelte:component this={config.component} onOpenPost={handleOpenBlogPost} />
-			{:else}
-				<svelte:component this={config.component} {...(state.props || {})} />
+				<Blog onOpenPost={handleOpenBlogPost} />
+			{:else if id === 'portfolio'}
+				<PortfolioPage />
 			{/if}
 		</WindowManager>
 	{/each}
@@ -276,6 +296,7 @@
 	<!-- Clippy-specific window -->
 	<WindowManager
 		windowState={windowStates['clippy-chat']}
+		{isMobile}
 		onClose={() => closeWindow('clippy-chat')}
 		toggleMinimize={() => toggleWindowMinimized('clippy-chat')}
 		onPositionChange={(x, y) => updateWindowPosition('clippy-chat', x, y)}
@@ -290,16 +311,16 @@
 	<!-- Blog Post window - rendered last so it appears on top -->
 	{#if selectedBlogPost}
 		{@const blogPostState = windowStates['blog-post']}
-		{@const blogPostConfig = windowConfigs['blog-post']}
 		<WindowManager
 			windowState={blogPostState}
+			{isMobile}
 			onClose={() => handleBackToBlog()}
 			toggleMinimize={() => toggleWindowMinimized('blog-post')}
 			onPositionChange={(x, y) => updateWindowPosition('blog-post', x, y)}
 			onSizeChange={(w, h) => updateWindowSize('blog-post', w, h)}
 			onBringToFront={() => bringToFront('blog-post')}
 		>
-			<svelte:component this={blogPostConfig.component} post={selectedBlogPost} onBack={handleBackToBlog} />
+			<BlogPost post={selectedBlogPost} onBack={handleBackToBlog} />
 		</WindowManager>
 	{/if}
 
@@ -338,5 +359,12 @@
 	.toolbar {
 		position: relative;
 		z-index: 1000000;
+	}
+
+	/* Mobile styles */
+	@media (max-width: 767px) {
+		:global(.desktop-shortcut) {
+			display: none;
+		}
 	}
 </style>

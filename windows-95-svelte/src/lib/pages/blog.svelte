@@ -65,7 +65,7 @@
 			<div class="section">
 				<div class="section-title">Newest Posts</div>
 				{#each posts as post (post.id)}
-					<button class="post-card" on:click={() => handlePostClick(post)}>
+					<button class="post-card" onclick={() => handlePostClick(post)}>
 						<div class="post-title">{post.title}</div>
 						<div class="post-date">{new Date(post.date).toLocaleDateString('en-US', {
 							year: 'numeric',
@@ -83,7 +83,7 @@
 				<div class="guestbook-form">
 					<input type="text" placeholder="Your Name" bind:value={newGuestName} class="guest-input" />
 					<input type="text" placeholder="Leave a message" bind:value={newGuestMessage} class="guest-input" />
-					<button on:click={addGuestbookEntry} class="sign-btn">Sign</button>
+					<button onclick={addGuestbookEntry} class="sign-btn">Sign</button>
 				</div>
 				<div class="guestbook-entries">
 					{#each guestbookEntries as entry}

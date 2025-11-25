@@ -8,9 +8,10 @@
       scanlinesSpeed = 3,
       zIndex = 2147483648,
       class: className = '',
+      children,
       ...restProps
     } = $props();
-    
+
     // Generate CSS custom properties using derived state
     const cssVars = $derived({
       '--scan-width': `${scanWidth}px`,
@@ -21,13 +22,15 @@
       '--scanlines-speed': `${scanlinesSpeed}s`
     });
   </script>
-  
-  <div 
-    class="scanlines {className}" 
+
+  <div
+    class="scanlines {className}"
     style={Object.entries(cssVars).map(([key, value]) => `${key}: ${value}`).join('; ')}
     {...restProps}
   >
-    <slot />
+    {#if children}
+      {@render children()}
+    {/if}
   </div>
   
   <style>
