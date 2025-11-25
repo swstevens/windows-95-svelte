@@ -10,10 +10,12 @@
 	import WindowManager from './window-manager.svelte';
     import PortfolioPage from '../pages/portfolio_page.svelte';
     import Blog from '../pages/blog.svelte';
+    import BlogPost from '../pages/blog-post.svelte';
     import Clippy from './clippy/clippy.svelte';
     import ClippyChat from './clippy/clippy-chat.svelte';
 	import Scanlines from './scanlines.svelte';
 	import { base } from '$app/paths';
+	import type { BlogPost as BlogPostType } from '$lib/data/blog';
 
     interface WindowState {
         id: string;
@@ -28,6 +30,7 @@
         iconUrl?: string;
         position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
         component?: any;
+        props?: Record<string, any>;
     }
 
     interface WindowConfig {
@@ -43,9 +46,31 @@
 
     // Z-index management
     let nextZIndex = $state(1000);
+    let selectedBlogPost = $state<BlogPostType | null>(null);
 
     function getNextZIndex(): number {
         return ++nextZIndex;
+    }
+
+    function handleOpenBlogPost(post: BlogPostType) {
+        selectedBlogPost = post;
+        // Update blog-post window title and open it
+        if (windowStates['blog-post']) {
+            windowStates['blog-post'].title = post.title;
+            windowStates['blog-post'].props = { post, onBack: handleBackToBlog };
+            openWindow('blog-post');
+            // Bring to front with a delay to ensure state updates and render first
+            setTimeout(() => {
+                bringToFront('blog-post');
+            }, 0);
+        }
+    }
+
+    function handleBackToBlog() {
+        closeWindow('blog-post');
+        selectedBlogPost = null;
+        // Bring blog window to front
+        bringToFront('blog');
     }
 
     // Window configuration dictionary
@@ -68,6 +93,16 @@
             width: 700,
             height: 550,
             component: Blog,
+            position: 'top-left'
+        },
+        'blog-post': {
+            title: 'Blog Post',
+            iconUrl: `${base}/icons/html2-5.png`,
+            x: 150,
+            y: 120,
+            width: 650,
+            height: 500,
+            component: BlogPost,
             position: 'top-left'
         },
         'clippy-chat': {
@@ -188,9 +223,9 @@
         handleWindowButton('clippy-chat');
     }
 
-    // Get list of window IDs to render (excluding clippy-chat as it's special)
+    // Get list of window IDs to render (excluding clippy-chat and blog-post as they're special)
     let renderableWindows = $derived(
-        Object.keys(windowStates).filter(id => id !== 'clippy-chat')
+        Object.keys(windowStates).filter(id => !['clippy-chat', 'blog-post'].includes(id))
     );
 </script>
 
@@ -230,7 +265,11 @@
 			onSizeChange={(w, h) => updateWindowSize(id, w, h)}
 			onBringToFront={() => bringToFront(id)}
 		>
-			<svelte:component this={config.component} />
+			{#if id === 'blog'}
+				<svelte:component this={config.component} onOpenPost={handleOpenBlogPost} />
+			{:else}
+				<svelte:component this={config.component} {...(state.props || {})} />
+			{/if}
 		</WindowManager>
 	{/each}
 
@@ -247,6 +286,22 @@
 	</WindowManager>
 
     <Clippy onRequestChatWindow={handleClippyChatRequest} />
+
+	<!-- Blog Post window - rendered last so it appears on top -->
+	{#if selectedBlogPost}
+		{@const blogPostState = windowStates['blog-post']}
+		{@const blogPostConfig = windowConfigs['blog-post']}
+		<WindowManager
+			windowState={blogPostState}
+			onClose={() => handleBackToBlog()}
+			toggleMinimize={() => toggleWindowMinimized('blog-post')}
+			onPositionChange={(x, y) => updateWindowPosition('blog-post', x, y)}
+			onSizeChange={(w, h) => updateWindowSize('blog-post', w, h)}
+			onBringToFront={() => bringToFront('blog-post')}
+		>
+			<svelte:component this={blogPostConfig.component} post={selectedBlogPost} onBack={handleBackToBlog} />
+		</WindowManager>
+	{/if}
 
 	<!-- Toolbar at bottom -->
 	<div class="toolbar">

@@ -1,32 +1,17 @@
 <script lang="ts">
+	import BlogPageWrapper from '$lib/components/blog-page-wrapper.svelte';
+	import { getBlogPosts } from '$lib/data/blog';
+	import type { BlogPost } from '$lib/data/blog';
+
 	interface Props {
 		windowWidth?: number;
+		onOpenPost?: (post: BlogPost) => void;
 	}
 
-	let { windowWidth = 800 }: Props = $props();
+	let { windowWidth = 800, onOpenPost }: Props = $props();
 
 	let visitorCount = $state(Math.floor(Math.random() * 9000) + 1000);
-	let posts = $state([
-		{
-			id: 1,
-			title: 'Welcome to my Blog',
-			date: 'November 20, 2025',
-			content: 'Hello and welcome to my corner of the web! This is where I share my thoughts, projects, and cool stuff I find on the internet. Thanks for stopping by!'
-		},
-		{
-			id: 2,
-			title: 'New Project Update',
-			date: 'November 15, 2025',
-			content: 'Been working hard on some new features. Stay tuned for more updates coming soon! The site is still under construction but it will be worth the wait.'
-		},
-		{
-			id: 3,
-			title: 'Cool Links I Found',
-			date: 'November 10, 2025',
-			content: 'Check out these awesome sites I discovered this week. The web is full of amazing things if you know where to look!'
-		}
-	]);
-
+	let posts = $state<BlogPost[]>([]);
 	let guestbookEntries = $state([
 		{ name: 'CoolDude99', message: 'Awesome site!!', date: 'Nov 18' },
 		{ name: 'WebSurfer2000', message: 'Love the retro vibes', date: 'Nov 12' }
@@ -34,6 +19,11 @@
 
 	let newGuestName = $state('');
 	let newGuestMessage = $state('');
+
+	$effect(() => {
+		// Load posts on component mount
+		posts = getBlogPosts();
+	});
 
 	function addGuestbookEntry() {
 		if (newGuestName.trim() && newGuestMessage.trim()) {
@@ -46,6 +36,10 @@
 		}
 	}
 
+	function handlePostClick(post: BlogPost) {
+		onOpenPost?.(post);
+	}
+
 	$effect(() => {
 		const interval = setInterval(() => {
 			visitorCount += Math.floor(Math.random() * 3);
@@ -54,87 +48,69 @@
 	});
 </script>
 
-<div class="page geocities-page">
-	<div class="page-content">
-		<!-- Header -->
-		<div class="site-header">
-			<div class="construction">UNDER CONSTRUCTION</div>
-			<h2 class="site-title">MY BLOG</h2>
-			<div class="tagline">Welcome / Thanks for visiting / Sign my guestbook</div>
-			<div class="visitor-counter">
-				Visitor <span class="counter">{visitorCount.toString().padStart(6, '0')}</span>
-			</div>
-		</div>
-
-		<!-- Posts Section -->
-		<div class="section">
-			<div class="section-title">Latest Posts</div>
-			{#each posts as post}
-				<div class="post-card">
-					<div class="post-title">{post.title}</div>
-					<div class="post-date">{post.date}</div>
-					<p class="post-content">{post.content}</p>
+<BlogPageWrapper>
+	{#snippet children()}
+		<div class="page-content">
+			<!-- Header -->
+			<div class="site-header">
+				<div class="construction">UNDER CONSTRUCTION</div>
+				<h2 class="site-title">MY BLOG</h2>
+				<div class="tagline">Welcome / Thanks for visiting / Sign my guestbook</div>
+				<div class="visitor-counter">
+					Visitor <span class="counter">{visitorCount.toString().padStart(6, '0')}</span>
 				</div>
-			{/each}
-		</div>
-
-		<!-- Guestbook Section -->
-		<div class="section guestbook">
-			<div class="section-title">Guestbook</div>
-			<div class="guestbook-form">
-				<input type="text" placeholder="Your Name" bind:value={newGuestName} class="guest-input" />
-				<input type="text" placeholder="Leave a message" bind:value={newGuestMessage} class="guest-input" />
-				<button onclick={addGuestbookEntry} class="sign-btn">Sign</button>
 			</div>
-			<div class="guestbook-entries">
-				{#each guestbookEntries as entry}
-					<div class="guest-entry">
-						<span class="guest-name">{entry.name}</span>
-						<span class="guest-date">{entry.date}</span>
-						<span class="guest-msg">{entry.message}</span>
-					</div>
+
+			<!-- Posts Section -->
+			<div class="section">
+				<div class="section-title">Newest Posts</div>
+				{#each posts as post (post.id)}
+					<button class="post-card" on:click={() => handlePostClick(post)}>
+						<div class="post-title">{post.title}</div>
+						<div class="post-date">{new Date(post.date).toLocaleDateString('en-US', {
+							year: 'numeric',
+							month: 'short',
+							day: 'numeric'
+						})}</div>
+						<p class="post-excerpt">{post.excerpt}</p>
+					</button>
 				{/each}
 			</div>
-		</div>
 
-		<!-- Footer -->
-		<div class="footer">
-			<div class="badges">
-				<span class="badge">Made with care</span>
-				<span class="badge">Est. 2025</span>
+			<!-- Guestbook Section -->
+			<div class="section guestbook">
+				<div class="section-title">Guestbook</div>
+				<div class="guestbook-form">
+					<input type="text" placeholder="Your Name" bind:value={newGuestName} class="guest-input" />
+					<input type="text" placeholder="Leave a message" bind:value={newGuestMessage} class="guest-input" />
+					<button on:click={addGuestbookEntry} class="sign-btn">Sign</button>
+				</div>
+				<div class="guestbook-entries">
+					{#each guestbookEntries as entry}
+						<div class="guest-entry">
+							<span class="guest-name">{entry.name}</span>
+							<span class="guest-date">{entry.date}</span>
+							<span class="guest-msg">{entry.message}</span>
+						</div>
+					{/each}
+				</div>
 			</div>
-			<div class="webring">
-				Prev / <span class="ring-name">RetroWeb Ring</span> / Next
+
+			<!-- Footer -->
+			<div class="footer">
+				<div class="badges">
+					<span class="badge">Made with care</span>
+					<span class="badge">Est. 2025</span>
+				</div>
+				<div class="webring">
+					Prev / <span class="ring-name">RetroWeb Ring</span> / Next
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
+	{/snippet}
+</BlogPageWrapper>
 
 <style>
-	/*
-	 * Palette: Earthy Rust
-	 * --bg:      60% - main background
-	 * --primary: 30% - sections, text
-	 * --accent:  10% - highlights, CTAs
-	 * --muted:   subtle accents, dates, borders
-	 *
-	 * Fonts: Orbitron and Space Mono are imported globally in desktop.svelte
-	 */
-
-	.page {
-		--bg: #E4D5C0;
-		--accent: #1d6345;
-		--primary: #c2754f;
-		--muted: #1d6345;
-
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		background: var(--bg);
-		color: var(--primary);
-		font-family: 'Space Mono', monospace;
-	}
-
 	.page-content {
 		flex: 1;
 		overflow-y: auto;
@@ -211,10 +187,25 @@
 	}
 
 	.post-card {
+		all: unset;
+		display: block;
 		background: transparent;
 		border-left: 3px solid var(--accent);
 		padding: 8px 12px;
 		margin-bottom: 12px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-align: left;
+	}
+
+	.post-card:hover {
+		background: rgba(29, 99, 69, 0.1);
+		border-left-width: 5px;
+		padding-left: 10px;
+	}
+
+	.post-card:active {
+		background: rgba(29, 99, 69, 0.2);
 	}
 
 	.post-title {
@@ -225,6 +216,10 @@
 		letter-spacing: 1px;
 	}
 
+	.post-card:hover .post-title {
+		color: var(--accent);
+	}
+
 	.post-date {
 		color: var(--muted);
 		font-size: 9px;
@@ -232,7 +227,7 @@
 		letter-spacing: 1px;
 	}
 
-	.post-content {
+	.post-excerpt {
 		color: var(--bg);
 		font-size: 10px;
 		line-height: 1.6;
