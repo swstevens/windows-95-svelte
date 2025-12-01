@@ -17,8 +17,8 @@
 			<p class="subtitle">
 				A 2D/3D graphics engine with hierarchical scene graphs and forward kinematics
 			</p>
-			<a href="https://github.com/swstevens/claude-testing"
-				>https://github.com/swstevens/claude-testing</a
+			<a href="https://github.com/swstevens/ICS481-Graphics-Implementations"
+				>https://github.com/swstevens/ICS481-Graphics-Implementations</a
 			>
 			<p>
 				A comprehensive graphics engine built using OpenGL bindings in Common Lisp. Features

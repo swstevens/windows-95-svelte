@@ -1,8 +1,0 @@
-{
-  "id": "2025-11-25-svelte-tips",
-  "title": "Svelte Tips and Tricks",
-  "slug": "svelte-tips",
-  "date": "2025-11-25",
-  "excerpt": "Some useful tips for writing cleaner and more efficient Svelte code.",
-  "content": "<h2>Making the Most of Svelte</h2><p>Svelte is a wonderful framework that brings a fresh approach to building web applications. Here are some tips I've picked up along the way.</p><h2>Reactivity with Runes</h2><p>Svelte 5 introduces runes which make reactivity explicit and predictable. Using <code>$state</code>, <code>$derived</code>, and <code>$effect</code> makes your code intentions crystal clear.</p><h2>Component Composition</h2><p>Keep components small and focused. Each component should have a single responsibility, making them easier to test and reuse.</p><h2>Styling Scoped by Default</h2><p>One of my favorite features of Svelte is that styles are scoped to the component by default. No more CSS class naming conflicts!</p><h2>Performance Matters</h2><p>Svelte compiles your components at build time, resulting in highly optimized JavaScript. This means smaller bundles and faster load times for your users.</p>"
-}

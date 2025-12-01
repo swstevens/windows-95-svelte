@@ -2,8 +2,12 @@
 	import BlogPageWrapper from '$lib/components/blog-page-wrapper.svelte';
 	import { getBlogPosts } from '$lib/data/blog';
 	import type { BlogPost } from '$lib/data/blog';
-	import { getVisitorCount, getGuestbookEntries as fetchGuestbookEntries, addGuestbookEntry as addEntry } from '$lib/supabase';
-	import type { GuestbookEntry } from '$lib/supabase';
+	import {
+		getVisitorCount,
+		getGuestbookEntries as fetchGuestbookEntries,
+		addGuestbookEntry as addEntry
+	} from '$lib/api-client';
+	import type { GuestbookEntry } from '$lib/api-client';
 	import { goto } from '$app/navigation';
 
 	let visitorCount = $state(1337);
@@ -23,10 +27,7 @@
 	});
 
 	async function loadData() {
-		const [count, entries] = await Promise.all([
-			getVisitorCount(),
-			fetchGuestbookEntries()
-		]);
+		const [count, entries] = await Promise.all([getVisitorCount(), fetchGuestbookEntries()]);
 		visitorCount = count;
 		guestbookEntries = entries;
 	}
@@ -68,11 +69,13 @@
 				{#each posts as post (post.id)}
 					<button class="post-card" onclick={() => handlePostClick(post)}>
 						<div class="post-title">{post.title}</div>
-						<div class="post-date">{new Date(post.date).toLocaleDateString('en-US', {
-							year: 'numeric',
-							month: 'short',
-							day: 'numeric'
-						})}</div>
+						<div class="post-date">
+							{new Date(post.date).toLocaleDateString('en-US', {
+								year: 'numeric',
+								month: 'short',
+								day: 'numeric'
+							})}
+						</div>
 						<p class="post-excerpt">{post.excerpt}</p>
 					</button>
 				{/each}
@@ -82,8 +85,18 @@
 			<div class="section guestbook">
 				<div class="section-title">Guestbook</div>
 				<div class="guestbook-form">
-					<input type="text" placeholder="Your Name" bind:value={newGuestName} class="guest-input" />
-					<input type="text" placeholder="Leave a message" bind:value={newGuestMessage} class="guest-input" />
+					<input
+						type="text"
+						placeholder="Your Name"
+						bind:value={newGuestName}
+						class="guest-input"
+					/>
+					<input
+						type="text"
+						placeholder="Leave a message"
+						bind:value={newGuestMessage}
+						class="guest-input"
+					/>
 					<button onclick={addGuestbookEntry} class="sign-btn">Sign</button>
 				</div>
 				<div class="guestbook-entries">
