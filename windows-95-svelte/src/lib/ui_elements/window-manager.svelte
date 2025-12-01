@@ -147,10 +147,30 @@
 
 	let windowElement: HTMLDivElement | undefined = $state();
 
-	function handleWindowClick() {
+	function handleWindowClick(event: MouseEvent) {
+		// Don't steal focus from input elements or textareas
+		const target = event.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON') {
+			// Still bring window to front, but don't focus the window div
+			onBringToFront?.();
+			scrollWindowIntoView();
+			return;
+		}
+
 		onBringToFront?.();
-		// Focus the window to ensure keyboard events work
+		scrollWindowIntoView();
+		// Only focus the window div if we're not clicking on an interactive element
 		windowElement?.focus();
+	}
+
+	function scrollWindowIntoView() {
+		if (windowElement) {
+			windowElement.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest',
+				inline: 'nearest'
+			});
+		}
 	}
 
 	function handleKeyDown(event: KeyboardEvent) {

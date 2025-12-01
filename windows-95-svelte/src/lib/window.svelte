@@ -178,9 +178,33 @@
 		}
 	}
 
-	function handleWindowClick() {
+	let windowElement: HTMLDivElement | undefined = $state();
+
+	function handleWindowClick(event: MouseEvent) {
+		// Don't steal focus from input elements or textareas
+		const target = event.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON') {
+			// Still bring window to front
+			zIndex = Date.now();
+			scrollWindowIntoView();
+			return;
+		}
+
 		// Bring window to front when clicked
 		zIndex = Date.now();
+		scrollWindowIntoView();
+		// Only focus the window div if we're not clicking on an interactive element
+		windowElement?.focus();
+	}
+
+	function scrollWindowIntoView() {
+		if (windowElement) {
+			windowElement.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest',
+				inline: 'nearest'
+			});
+		}
 	}
 </script>
 
@@ -206,8 +230,12 @@
 
 {#if isVisible && !isMinimized}
 	<div
+		bind:this={windowElement}
 		class="window"
 		style="left: {x}px; top: {y}px; width: {width}px; height: {height}px; z-index: {zIndex};"
+		role="dialog"
+		aria-label={windowTitle}
+		tabindex="0"
 		onclick={handleWindowClick}
 	>
 		<!-- Title Bar -->
