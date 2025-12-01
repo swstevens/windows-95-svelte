@@ -13,6 +13,17 @@
       <h2>Experience</h2>
 
       <div class="themed-card experience-item">
+        <h3>UNIVERSITY OF HAWAII AT MANOA</h3>
+        <p class="date">Honolulu, 08/24-Present</p>
+        <p>
+          Currently pursuing a Master's degree in Computer Science with a focus on advanced software engineering, artificial intelligence, and system design. Engaging in graduate-level coursework covering topics including machine learning, distributed systems, and advanced algorithms.
+        </p>
+        <p>
+          Developing expertise in modern AI architectures including agentic systems, retrieval-augmented generation (RAG), and context-aware generation techniques. Building practical applications that demonstrate advanced software engineering principles and autonomous agent coordination.
+        </p>
+      </div>
+  
+      <div class="themed-card experience-item">
         <h3>VINDICIA</h3>
         <p class="date">San Francisco, 03/22-12/23</p>
         <p>

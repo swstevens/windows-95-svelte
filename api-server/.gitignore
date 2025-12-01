@@ -1,0 +1,10 @@
+# Binary
+blog-api
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Go
+go.sum

@@ -2,6 +2,8 @@
 	import BlogPageWrapper from '$lib/components/blog-page-wrapper.svelte';
 	import { getBlogPosts } from '$lib/data/blog';
 	import type { BlogPost } from '$lib/data/blog';
+	import { getVisitorCount, getGuestbookEntries as fetchGuestbookEntries, addGuestbookEntry as addEntry } from '$lib/supabase';
+	import type { GuestbookEntry } from '$lib/supabase';
 
 	interface Props {
 		windowWidth?: number;
@@ -10,42 +12,47 @@
 
 	let { windowWidth = 800, onOpenPost }: Props = $props();
 
-	let visitorCount = $state(Math.floor(Math.random() * 9000) + 1000);
+	let visitorCount = $state(1337);
 	let posts = $state<BlogPost[]>([]);
-	let guestbookEntries = $state([
-		{ name: 'CoolDude99', message: 'Awesome site!!', date: 'Nov 18' },
-		{ name: 'WebSurfer2000', message: 'Love the retro vibes', date: 'Nov 12' }
-	]);
+	let guestbookEntries = $state<GuestbookEntry[]>([]);
 
 	let newGuestName = $state('');
 	let newGuestMessage = $state('');
+	let isSubmitting = $state(false);
 
 	$effect(() => {
 		// Load posts on component mount
 		posts = getBlogPosts();
+
+		// Load Supabase data
+		loadData();
 	});
 
-	function addGuestbookEntry() {
-		if (newGuestName.trim() && newGuestMessage.trim()) {
-			guestbookEntries = [
-				{ name: newGuestName, message: newGuestMessage, date: 'Today' },
-				...guestbookEntries
-			];
-			newGuestName = '';
-			newGuestMessage = '';
+	async function loadData() {
+		const [count, entries] = await Promise.all([
+			getVisitorCount(),
+			fetchGuestbookEntries()
+		]);
+		visitorCount = count;
+		guestbookEntries = entries;
+	}
+
+	async function addGuestbookEntry() {
+		if (newGuestName.trim() && newGuestMessage.trim() && !isSubmitting) {
+			isSubmitting = true;
+			const newEntry = await addEntry(newGuestName, newGuestMessage);
+			if (newEntry) {
+				guestbookEntries = [newEntry, ...guestbookEntries];
+				newGuestName = '';
+				newGuestMessage = '';
+			}
+			isSubmitting = false;
 		}
 	}
 
 	function handlePostClick(post: BlogPost) {
 		onOpenPost?.(post);
 	}
-
-	$effect(() => {
-		const interval = setInterval(() => {
-			visitorCount += Math.floor(Math.random() * 3);
-		}, 8000);
-		return () => clearInterval(interval);
-	});
 </script>
 
 <BlogPageWrapper>
