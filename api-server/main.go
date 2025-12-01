@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/glebarez/go-sqlite"
 )
 
 type GuestbookEntry struct {
@@ -29,7 +29,7 @@ var db *sql.DB
 
 func main() {
 	var err error
-	db, err = sql.Open("sqlite3", "./blog.db")
+	db, err = sql.Open("sqlite", "./blog.db")
 	if err != nil {
 		log.Fatal(err)
 	}
