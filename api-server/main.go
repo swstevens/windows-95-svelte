@@ -51,8 +51,16 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("Server starting on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	certPath := os.Getenv("SSL_CERT_FILE")
+	keyPath := os.Getenv("SSL_KEY_FILE")
+
+	if certPath != "" && keyPath != "" {
+		log.Printf("Starting HTTPS server on port %s", port)
+		log.Fatal(http.ListenAndServeTLS(":"+port, certPath, keyPath, nil))
+	} else {
+		log.Printf("Starting HTTP server on port %s", port)
+		log.Fatal(http.ListenAndServe(":"+port, nil))
+	}
 }
 
 func initDB() error {
