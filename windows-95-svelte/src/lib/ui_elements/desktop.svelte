@@ -1,5 +1,5 @@
 <svelte:head>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </svelte:head>
@@ -58,6 +58,7 @@
     // Z-index management
     let nextZIndex = $state(1000);
     let selectedBlogPost = $state<BlogPostType | null>(null);
+    let showScanlines = $state(true);
 
     function getNextZIndex(): number {
         return ++nextZIndex;
@@ -248,10 +249,14 @@
     );
 </script>
 
-<Scanlines
-  scanWidth={2}
-  scanlineSpeed={30}
-/>
+{#if showScanlines}
+	<Scanlines
+	  scanWidth={2}
+	  scanlineSpeed={30}
+	>
+		<div></div>
+	</Scanlines>
+{/if}
 <div class="desktop">
 	<!-- Desktop Shortcuts - Generated from window config -->
 	{#each renderableWindows as id, index}
@@ -288,7 +293,7 @@
 			{#if id === 'blog'}
 				<Blog onOpenPost={handleOpenBlogPost} />
 			{:else if id === 'portfolio'}
-				<PortfolioPage />
+				<PortfolioPage {showScanlines} onToggleScanlines={() => showScanlines = !showScanlines} />
 			{/if}
 		</WindowManager>
 	{/each}

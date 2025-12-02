@@ -7,10 +7,11 @@
 
 	// Props interface
 	interface Props {
-		// Add any props you might need
+		showScanlines?: boolean;
+		onToggleScanlines?: () => void;
 	}
 
-	let {}: Props = $props();
+	let { showScanlines = true, onToggleScanlines }: Props = $props();
 
 	// Navigation state
 	type PageType = 'Home' | 'About' | 'Experience' | 'Projects';
@@ -41,7 +42,7 @@
 	<Navigation {currentPage} onNavigate={navigateTo}/> 
 	<!-- TODO very small pages don't center well, and the heaadspin will overlap the navigation bar -->
 	{#if currentPage === 'Home'}
-		<Home {windowWidth} />
+		<Home {windowWidth} {showScanlines} {onToggleScanlines} />
 	{:else if currentPage === 'About'}
 		<About />
 	{:else if currentPage === 'Experience'}

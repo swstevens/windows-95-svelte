@@ -4,12 +4,20 @@
 	import { base } from '$app/paths';
 	interface Props {
 		windowWidth: number;
+		showScanlines?: boolean;
+		onToggleScanlines?: () => void;
 	}
 
-	let { windowWidth }: Props = $props();
+	let { windowWidth, showScanlines = true, onToggleScanlines }: Props = $props();
 </script>
 
 <div class="page home-page">
+	<div class="scanlines-control">
+		<span class="scanlines-label">scanlines:</span>
+		<button class="scanlines-toggle" onclick={onToggleScanlines} title="Toggle scanlines">
+			{showScanlines ? '☑' : '☐'}
+		</button>
+	</div>
 	<div class="image-section">
 		<img src="{base}/headspin-square-unscreen.gif" alt="my head" class="headspin" />
 	</div>
@@ -25,6 +33,7 @@
 		height: 100%;
 		padding: 8px;
 		min-height: 0;
+		position: relative;
 	}
 
 	.home-page {
@@ -63,7 +72,7 @@
 	h1 {
 		margin: 0;
 		color: #4C545C;
-		font-family: 'Orbitron', 'MS Sans Serif', sans-serif;
+		font-family: 'Zen Dots', 'MS Sans Serif', sans-serif;
 		letter-spacing: 1px;
 		font-size: 56px;
 		font-weight: bold;
@@ -72,6 +81,51 @@
 
 	.center-text {
 		text-align: center;
+	}
+
+	.scanlines-control {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		z-index: 100;
+	}
+
+	.scanlines-label {
+		color: #000;
+		font-family: 'Space Mono', monospace;
+		font-size: 11px;
+		font-weight: bold;
+		user-select: none;
+	}
+
+	.scanlines-toggle {
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		background: #C0C0C0;
+		border: 2px outset #DFDFDF;
+		border-right-color: #808080;
+		border-bottom-color: #808080;
+		color: #000;
+		font-size: 14px;
+		cursor: pointer;
+		font-family: 'MS Sans Serif', Arial, sans-serif;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		user-select: none;
+		line-height: 1;
+		flex-shrink: 0;
+	}
+
+	.scanlines-toggle:active {
+		border: 2px inset #DFDFDF;
+		border-right-color: #FFFFFF;
+		border-bottom-color: #FFFFFF;
 	}
 
 	@media (max-width: 600px) {

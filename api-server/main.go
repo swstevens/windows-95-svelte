@@ -48,19 +48,21 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "9000"
 	}
 
 	certPath := os.Getenv("SSL_CERT_FILE")
 	keyPath := os.Getenv("SSL_KEY_FILE")
 
+	// Start HTTPS server if certificates are available
 	if certPath != "" && keyPath != "" {
 		log.Printf("Starting HTTPS server on port %s", port)
 		log.Fatal(http.ListenAndServeTLS(":"+port, certPath, keyPath, nil))
-	} else {
-		log.Printf("Starting HTTP server on port %s", port)
-		log.Fatal(http.ListenAndServe(":"+port, nil))
 	}
+
+	// Fall back to HTTP if no certificates
+	log.Printf("Starting HTTP server on port %s", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func initDB() error {
@@ -101,7 +103,9 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Max-Age", "86400")
 
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
