@@ -74,13 +74,15 @@
 	/* Mobile adjustments */
 	@media (max-width: 480px) {
 		.navigation {
-			flex-direction: column;
-			align-items: center;
+			gap: 4px;
+			padding: 6px;
 		}
 
 		.nav-link {
-			margin: 2px 0;
-			width: 120px;
+			padding: 6px 8px;
+			font-size: 9px;
+			min-width: 0;
+			flex: 1 1 auto;
 		}
 	}
 </style>

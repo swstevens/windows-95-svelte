@@ -13,16 +13,35 @@
       <h2>Experience</h2>
 
       <div class="themed-card experience-item">
+        <h3>SIGGRAPH 2026</h3>
+        <p class="date">Los Angeles, 07/26</p>
+        <p>
+          Served as a Student Volunteer at SIGGRAPH 2026, supporting conference operations including attendee assistance, talk facilitation, and author/poster support. Engaged directly with cutting-edge computer vision and computer graphics research, complementing graduate studies in AI and Data Science.
+        </p>
+      </div>
+
+      <div class="themed-card experience-item">
+        <h3>UHA HEALTH INSURANCE</h3>
+        <p class="date">Honolulu, 02/26-Present</p>
+        <p>
+          Working as a Software Engineer (starting as an intern before converting to full-time), iteratively optimizing internal data workflows and tooling. Took a recurring Risk team query from hours down to seconds by rewriting SQL Server views and stored procedures and building a Snowflake data lake with Python/Parquet ingestion. Automated daily operational tasks and recurring data aggregation via SQL stored procedures, and is piloting a further migration to Airflow-orchestrated Python workflows.
+        </p>
+        <p>
+          Built the frontend (Alpine.js) and backend queries for a newly built X12 automation tool that applies business rules to auto-route file approvals. Identified legacy design patterns limiting maintainability and partnered with the lead engineer to redesign the system using Onion Architecture and .NET.
+        </p>
+      </div>
+
+      <div class="themed-card experience-item">
         <h3>UNIVERSITY OF HAWAII AT MANOA</h3>
         <p class="date">Honolulu, 08/24-Present</p>
         <p>
-          Currently pursuing a Master's degree in Computer Science with a focus on advanced software engineering, artificial intelligence, and system design. Engaging in graduate-level coursework covering topics including machine learning, distributed systems, and advanced algorithms.
+          Pursuing a Master's degree in Computer Science with a focus on AI and Data Science, concentrating coursework in graphics programming, machine learning, and computer vision. Engaging in graduate-level coursework covering advanced algorithms, distributed systems, and the mathematical foundations behind modern rendering and vision pipelines.
         </p>
         <p>
-          Developing expertise in modern AI architectures including agentic systems, retrieval-augmented generation (RAG), and context-aware generation techniques. Building practical applications that demonstrate advanced software engineering principles and autonomous agent coordination.
+          Developing expertise in modern AI architectures including agentic systems, retrieval-augmented generation (RAG), and context-aware generation techniques, while building practical graphics and computer vision applications that demonstrate advanced software engineering principles and autonomous agent coordination.
         </p>
       </div>
-  
+
       <div class="themed-card experience-item">
         <h3>VINDICIA</h3>
         <p class="date">San Francisco, 03/22-12/23</p>

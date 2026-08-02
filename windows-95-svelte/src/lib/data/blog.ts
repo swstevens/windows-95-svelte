@@ -5,6 +5,7 @@ export interface BlogPost {
 	date: string;
 	excerpt: string;
 	content: string;
+	pdfUrl?: string;
 }
 
 // Import all blog posts from the blog-posts directory

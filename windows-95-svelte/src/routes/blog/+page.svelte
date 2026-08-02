@@ -2,48 +2,51 @@
 	import BlogPageWrapper from '$lib/components/blog-page-wrapper.svelte';
 	import { getBlogPosts } from '$lib/data/blog';
 	import type { BlogPost } from '$lib/data/blog';
-	import {
-		getVisitorCount,
-		getGuestbookEntries as fetchGuestbookEntries,
-		addGuestbookEntry as addEntry
-	} from '$lib/api-client';
-	import type { GuestbookEntry } from '$lib/api-client';
 	import { goto } from '$app/navigation';
 
-	let visitorCount = $state(1337);
-	let posts = $state<BlogPost[]>([]);
-	let guestbookEntries = $state<GuestbookEntry[]>([]);
+	// Guestbook/visitor-count feature sunset - backing Go API server is no longer run.
+	// Kept commented out (rather than deleted) in case the feature comes back.
+	// import {
+	// 	getVisitorCount,
+	// 	getGuestbookEntries as fetchGuestbookEntries,
+	// 	addGuestbookEntry as addEntry
+	// } from '$lib/api-client';
+	// import type { GuestbookEntry } from '$lib/api-client';
 
-	let newGuestName = $state('');
-	let newGuestMessage = $state('');
-	let isSubmitting = $state(false);
+	// let visitorCount = $state(1337);
+	let posts = $state<BlogPost[]>([]);
+	// let guestbookEntries = $state<GuestbookEntry[]>([]);
+
+	// let newGuestName = $state('');
+	// let newGuestMessage = $state('');
+	// let isSubmitting = $state(false);
 
 	$effect(() => {
 		// Load posts on component mount
 		posts = getBlogPosts();
 
 		// Load Supabase data
-		loadData();
+		// loadData();
 	});
 
-	async function loadData() {
-		const [count, entries] = await Promise.all([getVisitorCount(), fetchGuestbookEntries()]);
-		visitorCount = count;
-		guestbookEntries = entries;
-	}
+	// async function loadData() {
+	// 	const [count, entries] = await Promise.all([getVisitorCount(), fetchGuestbookEntries()]);
+	// 	visitorCount = count;
+	// 	guestbookEntries = entries;
+	// }
 
-	async function addGuestbookEntry() {
-		if (newGuestName.trim() && newGuestMessage.trim() && !isSubmitting) {
-			isSubmitting = true;
-			const newEntry = await addEntry(newGuestName, newGuestMessage);
-			if (newEntry) {
-				guestbookEntries = [newEntry, ...guestbookEntries];
-				newGuestName = '';
-				newGuestMessage = '';
-			}
-			isSubmitting = false;
-		}
-	}
+	// async function addGuestbookEntry() {
+	// 	if (newGuestName.trim() && newGuestMessage.trim() && !isSubmitting) {
+	// 		isSubmitting = true;
+	// 		const newEntry = await addEntry(newGuestName, newGuestMessage);
+	// 		if (newEntry) {
+	// 			guestbookEntries = [newEntry, ...guestbookEntries];
+	// 			newGuestName = '';
+	// 			newGuestMessage = '';
+	// 		}
+	// 		isSubmitting = false;
+	// 	}
+	// }
 
 	function handlePostClick(post: BlogPost) {
 		goto(`/blog/${post.slug}`);
@@ -57,10 +60,12 @@
 			<div class="site-header">
 				<div class="construction">UNDER CONSTRUCTION</div>
 				<h2 class="site-title">MY BLOG</h2>
-				<div class="tagline">Welcome / Thanks for visiting / Sign my guestbook</div>
+				<div class="tagline">Welcome / Thanks for visiting</div>
+				<!-- Visitor count sunset along with the Go API server
 				<div class="visitor-counter">
 					Visitor <span class="counter">{visitorCount.toString().padStart(6, '0')}</span>
 				</div>
+				-->
 			</div>
 
 			<!-- Posts Section -->
@@ -81,7 +86,7 @@
 				{/each}
 			</div>
 
-			<!-- Guestbook Section -->
+			<!-- Guestbook Section - sunset along with the Go API server
 			<div class="section guestbook">
 				<div class="section-title">Guestbook</div>
 				<div class="guestbook-form">
@@ -109,6 +114,7 @@
 					{/each}
 				</div>
 			</div>
+			-->
 
 			<!-- Footer -->
 			<div class="footer">
@@ -168,6 +174,7 @@
 		font-weight: 600;
 	}
 
+	/* Sunset alongside the visitor counter markup above
 	.visitor-counter {
 		margin-top: 14px;
 		font-size: 11px;
@@ -183,6 +190,7 @@
 		font-weight: 700;
 		border: 2px solid var(--primary);
 	}
+	*/
 
 	.section {
 		background: transparent;
@@ -253,6 +261,7 @@
 		margin: 0;
 	}
 
+	/* Sunset alongside the guestbook markup above
 	.guestbook-form {
 		display: flex;
 		gap: 8px;
@@ -335,6 +344,7 @@
 	.guest-msg {
 		color: var(--primary);
 	}
+	*/
 
 	.footer {
 		text-align: center;

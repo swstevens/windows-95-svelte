@@ -13,6 +13,38 @@
 		<h2>Projects</h2>
 
 		<div class="themed-card project-item">
+			<h3>LIGHTWEIGHT AI IMAGE DETECTION</h3>
+			<p class="subtitle">
+				Comparing a CNN and a vision transformer for AI-generated image detection under consumer-scale constraints
+			</p>
+			<a href="https://github.com/ics-professional-program/ics605-sp26-final-project-swstevens"
+				>https://github.com/ics-professional-program/ics605-sp26-final-project-swstevens</a
+			>
+			<p>
+				Fine-tuned EfficientNet-B0 and DeiT-Tiny to detect AI-generated images across unseen
+				generators on a single consumer GPU, then stress-tested both against commercial generators
+				entirely unseen during training. Includes a Grad-CAM interpretability analysis and ships
+				both models as an on-device Firefox extension via ONNX Runtime Web.
+			</p>
+		</div>
+
+		<div class="themed-card project-item">
+			<h3>DEADLOCK COUNTER ITEM EFFECTIVENESS STUDY</h3>
+			<p class="subtitle">
+				Statistical testing of whether community-consensus counter items actually move win rate
+			</p>
+			<a href="https://github.com/swstevens/604-Final-Deadlock-Item-Effectiveness-Study"
+				>https://github.com/swstevens/604-Final-Deadlock-Item-Effectiveness-Study</a
+			>
+			<p>
+				Applied chi-square tests and relative lift analysis to five community-consensus counter
+				item pairings in Valve's Deadlock, using match data across two rank bands. Found that
+				counter item effectiveness is rank-dependent and far from universal, challenging common
+				player assumptions.
+			</p>
+		</div>
+
+		<div class="themed-card project-item">
 			<h3>OPENGL GRAPHICS ENGINE (COMMON LISP)</h3>
 			<p class="subtitle">
 				A 2D/3D graphics engine with hierarchical scene graphs and forward kinematics

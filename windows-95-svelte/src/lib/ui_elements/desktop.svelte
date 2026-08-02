@@ -11,11 +11,13 @@
     import PortfolioPage from '../pages/portfolio_page.svelte';
     import Blog from '../pages/blog.svelte';
     import BlogPost from '../pages/blog-post.svelte';
-    import Clippy from './clippy/clippy.svelte';
-    import ClippyChat from './clippy/clippy-chat.svelte';
+    // Clippy removed from the UI - kept commented out (rather than deleted) in case it comes back.
+    // import Clippy from './clippy/clippy.svelte';
+    // import ClippyChat from './clippy/clippy-chat.svelte';
 	import Scanlines from './scanlines.svelte';
 	import { base } from '$app/paths';
 	import type { BlogPost as BlogPostType } from '$lib/data/blog';
+	import { MOBILE_BREAKPOINT } from '$lib/utils/breakpoints';
 
     interface WindowState {
         id: string;
@@ -45,13 +47,13 @@
     }
 
     // Mobile detection
-    let isMobile = $state(false);
     let screenWidth = $state(typeof window !== 'undefined' ? window.innerWidth : 0);
+    let isMobile = $state(screenWidth < MOBILE_BREAKPOINT);
 
     function updateScreenSize() {
         if (typeof window !== 'undefined') {
             screenWidth = window.innerWidth;
-            isMobile = screenWidth < 768;
+            isMobile = screenWidth < MOBILE_BREAKPOINT;
         }
     }
 
@@ -117,16 +119,17 @@
             component: BlogPost,
             position: 'top-left'
         },
-        'clippy-chat': {
-            title: '💬 Chat with Clippy',
-            iconUrl: `${base}/icons/html2-5.png`,
-            x: 200,
-            y: 150,
-            width: 400,
-            height: 500,
-            component: ClippyChat,
-            position: 'top-left'
-        }
+        // Clippy removed from the UI - kept commented out (rather than deleted) in case it comes back.
+        // 'clippy-chat': {
+        //     title: '💬 Chat with Clippy',
+        //     iconUrl: `${base}/icons/html2-5.png`,
+        //     x: 200,
+        //     y: 150,
+        //     width: 400,
+        //     height: 500,
+        //     component: ClippyChat,
+        //     position: 'top-left'
+        // }
     };
 
     // Initialize window states from config
@@ -238,10 +241,10 @@
         }
     }
 
-    // Clippy chat handler
-    function handleClippyChatRequest() {
-        handleWindowButton('clippy-chat');
-    }
+    // Clippy chat handler - kept commented out alongside the rest of the Clippy wiring.
+    // function handleClippyChatRequest() {
+    //     handleWindowButton('clippy-chat');
+    // }
 
     // Get list of window IDs to render (excluding clippy-chat and blog-post as they're special)
     let renderableWindows = $derived(
@@ -298,7 +301,7 @@
 		</WindowManager>
 	{/each}
 
-	<!-- Clippy-specific window -->
+	<!-- Clippy-specific window - removed from the UI, kept commented out in case it comes back.
 	<WindowManager
 		windowState={windowStates['clippy-chat']}
 		{isMobile}
@@ -312,6 +315,7 @@
 	</WindowManager>
 
     <Clippy onRequestChatWindow={handleClippyChatRequest} />
+	-->
 
 	<!-- Blog Post window - rendered last so it appears on top -->
 	{#if selectedBlogPost}

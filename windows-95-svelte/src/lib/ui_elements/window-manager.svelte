@@ -62,8 +62,9 @@
 			onSizeChange?.(window.innerWidth, window.innerHeight - 32);
 			isMaximized = true;
 		} else if (onSizeChange) {
-			const initialWidth = Math.floor(window.innerWidth - 2 * windowState.x);
-			const initialHeight = Math.floor(window.innerHeight - 2 * windowState.y);
+			const EDGE_MARGIN = 100;
+			const initialWidth = Math.floor(window.innerWidth - windowState.x - EDGE_MARGIN);
+			const initialHeight = Math.floor(window.innerHeight - windowState.y - EDGE_MARGIN);
 			onSizeChange(initialWidth, initialHeight);
 		}
 	});
