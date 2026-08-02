@@ -87,20 +87,11 @@ jobs:
         run: npm run build
         working-directory: ./windows-95-svelte
 
-      - name: Ensure target repo serves Pages from the main branch
-        run: |
-          response=$(curl -s -w '\n%{http_code}' -X PUT \
-            -H "Authorization: token ${{ secrets.PAGES_DEPLOY_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/swstevens/swstevens.github.io/pages \
-            -d '{"build_type":"legacy","source":{"branch":"main","path":"/"}}')
-          http_code=$(echo "$response" | tail -1)
-          body=$(echo "$response" | sed '$d')
-          echo "Pages API response ($http_code): $body"
-          if [ "$http_code" -ge 400 ]; then
-            echo "::error::Failed to set Pages source to branch main (HTTP $http_code)"
-            exit 1
-          fi
+      # Note: swstevens.github.io's Pages source (Settings -> Pages -> "Deploy from a
+      # branch" -> main -> / (root)) is configured manually, one time, in that repo's
+      # own settings. It doesn't need to be re-set on every deploy, and doing it via
+      # the API here required a token permission (Pages: Read and write) beyond what
+      # the deploy PAT is scoped to -- not worth granting for a one-time setup step.
 
       - name: Publish build output to swstevens.github.io
         uses: peaceiris/actions-gh-pages@v4
