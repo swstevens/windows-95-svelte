@@ -1,11 +1,70 @@
-name: Deploy to GitHub Pages
+# Previous version deployed this repo's own build to its GitHub Pages project page
+# (swstevens.github.io/windows-95-svelte/) via actions/deploy-pages. Replaced below with
+# a workflow that publishes the build output into swstevens/swstevens.github.io instead,
+# so the site is served from the root domain and only this repo needs maintaining.
+# Kept here commented out for reference/rollback.
+#
+# name: Deploy to GitHub Pages
+#
+# on:
+#   push:
+#     branches: ['main']
+#
+# jobs:
+#   build_site:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#
+#       - name: Install Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 18
+#           cache: npm
+#           cache-dependency-path: './windows-95-svelte/package-lock.json'
+#
+#       - name: Install dependencies
+#         run: npm install
+#         working-directory: ./windows-95-svelte
+#
+#       - name: Build
+#         env:
+#           BASE_PATH: ''
+#           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+#         run: npm run build
+#         working-directory: ./windows-95-svelte
+#
+#       - name: Upload Artifacts
+#         uses: actions/upload-pages-artifact@v3
+#         with:
+#           path: './windows-95-svelte/build/'
+#
+#   deploy:
+#     needs: build_site
+#     runs-on: ubuntu-latest
+#
+#     permissions:
+#       pages: write
+#       id-token: write
+#
+#     environment:
+#       name: github-pages
+#       url: ${{ steps.deployment.outputs.page_url }}
+#
+#     steps:
+#       - name: Deploy
+#         id: deployment
+#         uses: actions/deploy-pages@v4
+
+name: Deploy to swstevens.github.io
 
 on:
   push:
     branches: ['main']
 
 jobs:
-  build_site:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,28 +84,24 @@ jobs:
       - name: Build
         env:
           BASE_PATH: ''
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build
         working-directory: ./windows-95-svelte
 
-      - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3
+      - name: Ensure target repo serves Pages from the main branch
+        run: |
+          curl -s -X PUT \
+            -H "Authorization: token ${{ secrets.PAGES_DEPLOY_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/swstevens/swstevens.github.io/pages \
+            -d '{"source":{"branch":"main","path":"/"}}'
+
+      - name: Publish build output to swstevens.github.io
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: './windows-95-svelte/build/'
-
-  deploy:
-    needs: build_site
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+          personal_token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          external_repository: swstevens/swstevens.github.io
+          publish_branch: main
+          publish_dir: ./windows-95-svelte/build
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy windows-95-svelte @ ${{ github.sha }}'
