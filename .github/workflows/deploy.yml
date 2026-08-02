@@ -89,11 +89,18 @@ jobs:
 
       - name: Ensure target repo serves Pages from the main branch
         run: |
-          curl -s -X PUT \
+          response=$(curl -s -w '\n%{http_code}' -X PUT \
             -H "Authorization: token ${{ secrets.PAGES_DEPLOY_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/swstevens/swstevens.github.io/pages \
-            -d '{"source":{"branch":"main","path":"/"}}'
+            -d '{"build_type":"legacy","source":{"branch":"main","path":"/"}}')
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | sed '$d')
+          echo "Pages API response ($http_code): $body"
+          if [ "$http_code" -ge 400 ]; then
+            echo "::error::Failed to set Pages source to branch main (HTTP $http_code)"
+            exit 1
+          fi
 
       - name: Publish build output to swstevens.github.io
         uses: peaceiris/actions-gh-pages@v4
